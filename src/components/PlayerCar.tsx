@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import ParticleEmitter from './ParticleEmitter';
+import HeadlightGlow from './HeadlightGlow';
 import './PlayerCar.css';
 
 interface PlayerCarProps {
@@ -21,7 +23,12 @@ const PlayerCar: React.FC<PlayerCarProps> = ({ currentSpeed }) => {
 
   const carClassName = `player-car ${isCentered ? 'centered' : ''}`.trim();
 
-  return <div className={carClassName}></div>;
+  return (
+    <div className={carClassName}>
+      <HeadlightGlow />
+      <ParticleEmitter carSpeed={currentSpeed} />
+    </div>
+  );
 };
 
 export default PlayerCar; 

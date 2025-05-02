@@ -1,0 +1,35 @@
+/* src/components/Particles.css */
+.particle-emitter {
+  position: absolute;
+  /* Position near rear-left of PlayerCar container */
+  bottom: 10%; 
+  left: 10%; /* Position near the left edge of the car */
+  transform: translateX(0%); /* No horizontal centering needed */
+  width: 15%; /* Narrower emission zone relative to car */
+  height: 20%; 
+  /* background-color: rgba(255, 0, 0, 0.1); /* Debug */
+  z-index: 99; 
+  pointer-events: none;
+}
+
+.particle {
+  /* Initial state set by JS style prop */
+  opacity: 1;
+  position: absolute; /* Required for animation positioning */
+  will-change: transform, opacity;
+}
+
+@keyframes particleAnimation {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    /* Move strongly left, slightly up, scale down, fade out */
+    transform: translate(
+      -500px, /* Large fixed negative X offset */
+      calc(var(--random-y, 0) * -30px - 15px) /* Random slight upward drift */
+    ) scale(0.1); 
+    opacity: 0;
+  }
+} 
