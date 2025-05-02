@@ -65,7 +65,8 @@ const Game: React.FC<GameProps> = ({ onBackToMenu }) => {
     checkOrientation();
 
     // Attempt to lock orientation (best effort)
-    screen.orientation?.lock?.('landscape').catch((err: Error) => {
+    const orientation = screen.orientation as any; // Cast to any here
+    orientation?.lock?.('landscape').catch((err: Error) => { 
       console.warn('Screen orientation lock failed:', err.message);
       // Locking might fail, rely on manual rotation + overlay
     });
