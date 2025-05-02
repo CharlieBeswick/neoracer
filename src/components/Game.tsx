@@ -8,9 +8,9 @@ import PlayerCar from './PlayerCar';
 // import LightingOverlay from './LightingOverlay'; // Removed
 import './Game.css';
 
-// Assuming sounds are in public/assets/sounds/
-const IDLE_SOUND_SRC = '/assets/sounds/idle_sound.mp3';
-const RACE_SOUND_SRC = '/assets/sounds/race_sound.mp3';
+// Assuming sounds are in public/assets/
+const IDLE_SOUND_SRC = '/assets/idlesound.mp3';
+const RACE_SOUND_SRC = '/assets/racesound - 1746226597946.mp3';
 
 interface GameProps {
   onBackToMenu: () => void; // Function to go back to the menu
@@ -31,6 +31,7 @@ const Game: React.FC<GameProps> = ({ onBackToMenu }) => {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isLandscape, setIsLandscape] = useState(true); // Assume landscape initially
   const [showRotationOverlay, setShowRotationOverlay] = useState(false);
+  const [isMuted, setIsMuted] = useState(false); // Mute state
 
   // --- Pause Logic ---
   const isPaused = showRotationOverlay; // Pause game if overlay is shown
@@ -39,6 +40,11 @@ const Game: React.FC<GameProps> = ({ onBackToMenu }) => {
   const idleAudioRef = useRef<HTMLAudioElement | null>(null);
   const raceAudioRef = useRef<HTMLAudioElement | null>(null);
   const [raceSoundPlayed, setRaceSoundPlayed] = useState(false); // Track if race sound played in current high-speed phase
+
+  // --- Toggle Mute Function ---
+  const toggleMute = () => {
+    setIsMuted(prevMuted => !prevMuted);
+  };
 
   // --- Audio Loading ---
   useEffect(() => {
@@ -62,13 +68,14 @@ const Game: React.FC<GameProps> = ({ onBackToMenu }) => {
     const idleAudio = idleAudioRef.current;
     const raceAudio = raceAudioRef.current;
 
-    if (!idleAudio || !raceAudio || isPaused) {
-      // Pause sounds if paused or not loaded
+    // Immediately pause if muted or paused, or if audio isn't ready
+    if (isMuted || isPaused || !idleAudio || !raceAudio) {
       idleAudio?.pause();
       raceAudio?.pause();
-      return;
+      return; // Stop further processing if muted/paused
     }
 
+    // If not muted/paused, proceed with speed-based logic
     if (currentSpeed < 110) {
       // Low speed: Play idle sound, stop race sound
       if (raceAudio.currentTime > 0 && !raceAudio.paused) {
@@ -76,6 +83,7 @@ const Game: React.FC<GameProps> = ({ onBackToMenu }) => {
         raceAudio.currentTime = 0; // Reset race sound
       }
       if (idleAudio.paused) {
+        // Attempt to play only if not muted/paused
         idleAudio.play().catch(e => console.warn("Idle audio play failed:", e));
       }
       setRaceSoundPlayed(false); // Reset race sound flag when speed drops
@@ -85,12 +93,13 @@ const Game: React.FC<GameProps> = ({ onBackToMenu }) => {
         idleAudio.pause();
       }
       if (!raceSoundPlayed && raceAudio.paused) {
+        // Attempt to play only if not muted/paused
         raceAudio.play().catch(e => console.warn("Race audio play failed:", e));
         setRaceSoundPlayed(true); // Set flag so it doesn't play again immediately
       }
     }
 
-  }, [currentSpeed, isPaused, raceSoundPlayed]); // Rerun when speed, pause state, or raceSoundPlayed changes
+  }, [currentSpeed, isPaused, raceSoundPlayed, isMuted]); // Add isMuted to dependency array
 
   // TODO: Add logic to update currentSpeed based on car acceleration/state
 
@@ -200,6 +209,9 @@ const Game: React.FC<GameProps> = ({ onBackToMenu }) => {
         <button onClick={() => setCurrentSpeed(prev => Math.max(0, prev - 50))}>Decelerate</button>
         <button onClick={toggleFullscreen} style={{marginLeft: '10px'}}>
           {isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
+        </button>
+        <button onClick={toggleMute} style={{marginLeft: '10px'}}>
+          {isMuted ? 'Unmute' : 'Mute'}
         </button>
         <button onClick={onBackToMenu} style={{marginLeft: '10px'}}>Back to Menu</button>
       </div>
