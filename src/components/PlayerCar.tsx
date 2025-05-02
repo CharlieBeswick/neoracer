@@ -23,10 +23,21 @@ const PlayerCar: React.FC<PlayerCarProps> = ({ currentSpeed }) => {
 
   const carClassName = `player-car ${isCentered ? 'centered' : ''}`.trim();
 
+  // Calculate animation duration based on speed
+  // Lower duration = faster spin. Pause if speed is very low.
+  const wheelAnimationDuration = currentSpeed > 5 ? Math.max(0.05, 1 / (currentSpeed * 0.05)) : 0;
+  const wheelAnimationStyle = {
+    animationDuration: wheelAnimationDuration > 0 ? `${wheelAnimationDuration}s` : 'none',
+    animationPlayState: wheelAnimationDuration > 0 ? 'running' : 'paused',
+  };
+
   return (
     <div className={carClassName}>
       <HeadlightGlow />
       <ParticleEmitter carSpeed={currentSpeed} />
+      <div className="headlight-source"></div>
+      <div className="rear-wheel" style={wheelAnimationStyle}></div>
+      <div className="front-wheel" style={wheelAnimationStyle}></div>
     </div>
   );
 };

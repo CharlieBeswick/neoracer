@@ -8,6 +8,10 @@ import PlayerCar from './PlayerCar';
 // import LightingOverlay from './LightingOverlay'; // Removed
 import './Game.css';
 
+// Assuming sounds are in public/assets/sounds/
+const IDLE_SOUND_SRC = '/assets/sounds/idle_sound.mp3';
+const RACE_SOUND_SRC = '/assets/sounds/race_sound.mp3';
+
 interface GameProps {
   onBackToMenu: () => void; // Function to go back to the menu
 }
@@ -27,6 +31,66 @@ const Game: React.FC<GameProps> = ({ onBackToMenu }) => {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isLandscape, setIsLandscape] = useState(true); // Assume landscape initially
   const [showRotationOverlay, setShowRotationOverlay] = useState(false);
+
+  // --- Pause Logic ---
+  const isPaused = showRotationOverlay; // Pause game if overlay is shown
+
+  // Audio state
+  const idleAudioRef = useRef<HTMLAudioElement | null>(null);
+  const raceAudioRef = useRef<HTMLAudioElement | null>(null);
+  const [raceSoundPlayed, setRaceSoundPlayed] = useState(false); // Track if race sound played in current high-speed phase
+
+  // --- Audio Loading ---
+  useEffect(() => {
+    // Preload audio files
+    idleAudioRef.current = new Audio(IDLE_SOUND_SRC);
+    idleAudioRef.current.loop = true; // Enable looping for idle sound
+    raceAudioRef.current = new Audio(RACE_SOUND_SRC);
+    raceAudioRef.current.loop = false; // Race sound plays once
+
+    // Cleanup audio elements on component unmount
+    return () => {
+      idleAudioRef.current?.pause();
+      raceAudioRef.current?.pause();
+      idleAudioRef.current = null;
+      raceAudioRef.current = null;
+    };
+  }, []); // Empty dependency array ensures this runs only once on mount
+
+  // --- Audio Playback Logic ---
+  useEffect(() => {
+    const idleAudio = idleAudioRef.current;
+    const raceAudio = raceAudioRef.current;
+
+    if (!idleAudio || !raceAudio || isPaused) {
+      // Pause sounds if paused or not loaded
+      idleAudio?.pause();
+      raceAudio?.pause();
+      return;
+    }
+
+    if (currentSpeed < 110) {
+      // Low speed: Play idle sound, stop race sound
+      if (raceAudio.currentTime > 0 && !raceAudio.paused) {
+        raceAudio.pause();
+        raceAudio.currentTime = 0; // Reset race sound
+      }
+      if (idleAudio.paused) {
+        idleAudio.play().catch(e => console.warn("Idle audio play failed:", e));
+      }
+      setRaceSoundPlayed(false); // Reset race sound flag when speed drops
+    } else {
+      // High speed: Stop idle sound, play race sound (once)
+      if (!idleAudio.paused) {
+        idleAudio.pause();
+      }
+      if (!raceSoundPlayed && raceAudio.paused) {
+        raceAudio.play().catch(e => console.warn("Race audio play failed:", e));
+        setRaceSoundPlayed(true); // Set flag so it doesn't play again immediately
+      }
+    }
+
+  }, [currentSpeed, isPaused, raceSoundPlayed]); // Rerun when speed, pause state, or raceSoundPlayed changes
 
   // TODO: Add logic to update currentSpeed based on car acceleration/state
 
@@ -86,9 +150,6 @@ const Game: React.FC<GameProps> = ({ onBackToMenu }) => {
       // screen.orientation?.unlock?.(); 
     };
   }, [checkOrientation]);
-
-  // --- Pause Logic ---
-  const isPaused = showRotationOverlay; // Pause game if overlay is shown
 
   // Calculate speeds for different layers
   const roadScrollSpeed = currentSpeed;

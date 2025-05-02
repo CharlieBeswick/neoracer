@@ -3,7 +3,8 @@
   position: absolute;
   width: 450px; /* Was 300px */
   height: 225px; /* Was 150px */
-  background-image: url('/assets/car1blue.png');
+  /* Use the tyreless car body sprite */
+  background-image: url('/assets/car1bluenotyre.png');
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
@@ -23,4 +24,43 @@
   /* Centered position */
   left: 50%;
   transform: translateX(-50%); /* Center horizontally */
+}
+
+/* Wheel Styling */
+.rear-wheel,
+.front-wheel {
+  position: absolute;
+  /* Adjusted size slightly smaller */
+  width: 32px;  /* Was 35px */
+  height: 32px; /* Was 35px */
+  background-image: url('/assets/tyre1.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  z-index: 101; 
+
+  /* Apply spin animation - duration controlled by inline style */
+  animation-name: spin;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+/* Adjusted positions based on screenshot */
+.rear-wheel {
+  bottom: 16%; /* Was 18% - Lowered slightly */
+  left: 27%;  /* Was 28% */
+}
+
+.front-wheel {
+  bottom: 16%; /* Was 18% - Lowered slightly */
+  right: 31%; /* Was 35% */
+}
+
+/* Spin Animation */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 } 

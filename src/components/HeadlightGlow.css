@@ -30,22 +30,20 @@
 /* Bright circular source glow */
 .headlight-source {
   position: absolute;
-  /* Position at the visual origin of the beam (right edge, vertical center) */
-  top: 50%; 
-  right: 0; /* Was -10%, back to original */
-  transform: translateY(-50%); 
+  /* Positioned relative to player-car */
+  bottom: 16%; /* Was 18% - Lowered slightly */
+  left: auto;  
+  right: 16%;  
+  transform: translateY(-50%); /* Vertical centering */
   
+  /* Size/Appearance */
   width: 38px; 
   height: 38px; 
   border-radius: 50%; 
-  
-  /* Debug Appearance */
-  background-color: magenta; /* Debug: Bright obvious color */
-  filter: none; /* Debug: Remove blur */
-  
-  /* Blend mode */
-  mix-blend-mode: normal; /* Debug: Remove blending */
+  background-color: rgba(255, 255, 180, 0.95); 
+  filter: blur(7px); 
+  mix-blend-mode: color-dodge; 
 
-  /* Layering */
-  z-index: 99; 
+  /* Layering: Should be above beam, below wheels/particles */
+  z-index: 100; /* Place just below wheels (101) */
 } 
