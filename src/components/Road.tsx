@@ -3,9 +3,10 @@ import './Road.css';
 
 interface RoadProps {
   scrollSpeed: number; // Pixels per second
+  isPaused?: boolean; // Add prop
 }
 
-const Road: React.FC<RoadProps> = ({ scrollSpeed }) => {
+const Road: React.FC<RoadProps> = ({ scrollSpeed, isPaused = false }) => {
   const [scrollPos, setScrollPos] = useState(0);
   const animationFrameId = useRef<number | null>(null);
   const lastTimestamp = useRef<number | null>(null);
@@ -21,10 +22,13 @@ const Road: React.FC<RoadProps> = ({ scrollSpeed }) => {
       const deltaTime = (timestamp - lastTimestamp.current) / 1000; // seconds
       lastTimestamp.current = timestamp;
 
-      setScrollPos(prevPos => {
-        const newPos = prevPos - scrollSpeed * deltaTime;
-        return newPos; // CSS handles the wrap-around
-      });
+      // Pause check
+      if (!isPaused) {
+        setScrollPos(prevPos => {
+          const newPos = prevPos - scrollSpeed * deltaTime;
+          return newPos; // CSS handles the wrap-around
+        });
+      }
 
       animationFrameId.current = requestAnimationFrame(animate);
     };
@@ -41,7 +45,7 @@ const Road: React.FC<RoadProps> = ({ scrollSpeed }) => {
       lastTimestamp.current = null;
     };
     // Rerun effect if scrollSpeed changes
-  }, [scrollSpeed]); 
+  }, [scrollSpeed, isPaused]); 
 
   const roadStyle = {
     backgroundPosition: `${scrollPos}px 0%`,

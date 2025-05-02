@@ -24,4 +24,26 @@
 .game-overlay button {
   padding: 5px 10px;
   cursor: pointer;
+}
+
+.rotation-overlay {
+  position: fixed; /* Cover viewport */
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.85); /* Dark overlay */
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  z-index: 1000; /* Above everything */
+  font-size: 1.5rem;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.rotation-overlay p {
+  max-width: 80%;
 } 

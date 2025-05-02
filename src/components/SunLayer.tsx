@@ -3,9 +3,10 @@ import './SunLayer.css';
 
 interface SunLayerProps {
   scrollSpeed: number;
+  isPaused?: boolean;
 }
 
-const SunLayer: React.FC<SunLayerProps> = ({ scrollSpeed }) => {
+const SunLayer: React.FC<SunLayerProps> = ({ scrollSpeed, isPaused = false }) => {
   const [positionX, setPositionX] = useState(0);
   const animationFrameId = useRef<number | null>(null);
   const lastTimestamp = useRef<number | null>(null);
@@ -20,8 +21,9 @@ const SunLayer: React.FC<SunLayerProps> = ({ scrollSpeed }) => {
       const deltaTime = (timestamp - lastTimestamp.current) / 1000;
       lastTimestamp.current = timestamp;
 
-      // We adjust the container's position, not background
-      setPositionX(prevPos => (prevPos - scrollSpeed * deltaTime));
+      if (!isPaused) {
+        setPositionX(prevPos => (prevPos - scrollSpeed * deltaTime));
+      }
 
       animationFrameId.current = requestAnimationFrame(animate);
     };
@@ -35,7 +37,7 @@ const SunLayer: React.FC<SunLayerProps> = ({ scrollSpeed }) => {
       }
       lastTimestamp.current = null;
     };
-  }, [scrollSpeed]);
+  }, [scrollSpeed, isPaused]);
 
   // Apply transform for parallax, keep other CSS positioning
   const layerStyle = {

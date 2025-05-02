@@ -4,6 +4,7 @@ import './Particles.css';
 
 interface ParticleEmitterProps {
   carSpeed: number;
+  isPaused?: boolean;
 }
 
 interface ParticleState {
@@ -13,7 +14,7 @@ interface ParticleState {
 
 let particleIdCounter = 0;
 
-const ParticleEmitter: React.FC<ParticleEmitterProps> = ({ carSpeed }) => {
+const ParticleEmitter: React.FC<ParticleEmitterProps> = ({ carSpeed, isPaused = false }) => {
   const [particles, setParticles] = useState<ParticleState[]>([]);
   const emitterRef = useRef<HTMLDivElement>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -28,23 +29,20 @@ const ParticleEmitter: React.FC<ParticleEmitterProps> = ({ carSpeed }) => {
       intervalRef.current = null;
     }
 
-    if (carSpeed > 10) { // Only emit when moving above a threshold
-      // Adjust emission rate based on speed
-      // Emit much more frequently, decrease interval faster
-      const emissionInterval = Math.max(5, 100 - carSpeed * 0.6); // Lower min, steeper curve
-      const maxParticles = 150; // Was 50 - Allow more particles
+    if (!isPaused && carSpeed > 10) {
+      const emissionInterval = Math.max(5, 100 - carSpeed * 0.6);
+      const maxParticles = 150;
 
       intervalRef.current = setInterval(() => {
         if (particles.length >= maxParticles) return;
 
         const newParticleId = particleIdCounter++;
-        const particleSize = Math.max(2, 2 + carSpeed * 0.02); // Size based on speed
-        const animationDuration = Math.max(0.5, 1.5 - carSpeed * 0.002); // Faster speed = shorter duration
+        const particleSize = Math.max(2, 2 + carSpeed * 0.02);
+        const animationDuration = Math.max(0.5, 1.5 - carSpeed * 0.002);
         
         const emitterWidth = emitterRef.current?.offsetWidth || 50; 
         const offsetX = Math.random() * emitterWidth - (emitterWidth / 2);
         
-        // Add random values for CSS variable animation
         const randomX = Math.random();
         const randomY = Math.random();
 
@@ -77,7 +75,7 @@ const ParticleEmitter: React.FC<ParticleEmitterProps> = ({ carSpeed }) => {
         clearInterval(intervalRef.current);
       }
     };
-  }, [carSpeed, particles.length]); // Rerun when speed or particle count changes
+  }, [carSpeed, particles.length, isPaused]);
 
   return (
     <div ref={emitterRef} className="particle-emitter">

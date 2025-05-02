@@ -8,9 +8,10 @@ const TRACK_LENGTH_PIXELS = 600 * 200; // Define track length directly in pixels
 
 interface BackgroundProps {
   scrollSpeed: number; // Pixels per second
+  isPaused?: boolean; // Add prop
 }
 
-const Background: React.FC<BackgroundProps> = ({ scrollSpeed }) => {
+const Background: React.FC<BackgroundProps> = ({ scrollSpeed, isPaused = false }) => {
   const [scrollPos, setScrollPos] = useState(0);
   const animationFrameId = useRef<number | null>(null);
   const lastTimestamp = useRef<number | null>(null);
@@ -31,10 +32,13 @@ const Background: React.FC<BackgroundProps> = ({ scrollSpeed }) => {
       const deltaTime = (timestamp - lastTimestamp.current) / 1000; // seconds
       lastTimestamp.current = timestamp;
 
-      setScrollPos(prevPos => {
-        const newPos = prevPos - scrollSpeed * deltaTime;
-        return newPos; // CSS handles the wrap-around
-      });
+      // Pause check
+      if (!isPaused) {
+        setScrollPos(prevPos => {
+          const newPos = prevPos - scrollSpeed * deltaTime;
+          return newPos; // CSS handles the wrap-around
+        });
+      }
 
       animationFrameId.current = requestAnimationFrame(animate);
     };
@@ -51,7 +55,7 @@ const Background: React.FC<BackgroundProps> = ({ scrollSpeed }) => {
       lastTimestamp.current = null;
     };
     // Rerun effect if scrollSpeed changes
-  }, [scrollSpeed]);
+  }, [scrollSpeed, isPaused]);
 
   const backgroundStyle = {
     backgroundPosition: `${scrollPos}px 0%`,

@@ -3,9 +3,10 @@ import './MountainLayer.css';
 
 interface MountainLayerProps {
   scrollSpeed: number;
+  isPaused?: boolean;
 }
 
-const MountainLayer: React.FC<MountainLayerProps> = ({ scrollSpeed }) => {
+const MountainLayer: React.FC<MountainLayerProps> = ({ scrollSpeed, isPaused = false }) => {
   const [backgroundPositionX, setBackgroundPositionX] = useState(0);
   const animationFrameId = useRef<number | null>(null);
   const lastTimestamp = useRef<number | null>(null);
@@ -20,8 +21,11 @@ const MountainLayer: React.FC<MountainLayerProps> = ({ scrollSpeed }) => {
       const deltaTime = (timestamp - lastTimestamp.current) / 1000; // Time in seconds
       lastTimestamp.current = timestamp;
 
-      // Update background position based on speed and time
-      setBackgroundPositionX(prevPos => (prevPos - scrollSpeed * deltaTime));
+      // Pause check
+      if (!isPaused) {
+        // Update background position based on speed and time
+        setBackgroundPositionX(prevPos => (prevPos - scrollSpeed * deltaTime));
+      }
 
       animationFrameId.current = requestAnimationFrame(animate);
     };
@@ -35,7 +39,7 @@ const MountainLayer: React.FC<MountainLayerProps> = ({ scrollSpeed }) => {
       }
       lastTimestamp.current = null;
     };
-  }, [scrollSpeed]); // Rerun effect if scrollSpeed changes
+  }, [scrollSpeed, isPaused]); // Rerun effect if scrollSpeed changes
 
   const layerStyle = {
     backgroundPosition: `${backgroundPositionX}px 0%`,

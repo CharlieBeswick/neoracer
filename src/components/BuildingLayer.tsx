@@ -4,9 +4,10 @@ import './BuildingLayer.css';
 interface BuildingLayerProps {
   scrollSpeed: number;
   isGlowLayer?: boolean;
+  isPaused?: boolean;
 }
 
-const BuildingLayer: React.FC<BuildingLayerProps> = ({ scrollSpeed, isGlowLayer = false }) => {
+const BuildingLayer: React.FC<BuildingLayerProps> = ({ scrollSpeed, isGlowLayer = false, isPaused = false }) => {
   const [backgroundPositionX, setBackgroundPositionX] = useState(0);
   const animationFrameId = useRef<number | null>(null);
   const lastTimestamp = useRef<number | null>(null);
@@ -21,7 +22,9 @@ const BuildingLayer: React.FC<BuildingLayerProps> = ({ scrollSpeed, isGlowLayer 
       const deltaTime = (timestamp - lastTimestamp.current) / 1000;
       lastTimestamp.current = timestamp;
 
-      setBackgroundPositionX(prevPos => (prevPos - scrollSpeed * deltaTime));
+      if (!isPaused) {
+        setBackgroundPositionX(prevPos => (prevPos - scrollSpeed * deltaTime));
+      }
 
       animationFrameId.current = requestAnimationFrame(animate);
     };
@@ -35,7 +38,7 @@ const BuildingLayer: React.FC<BuildingLayerProps> = ({ scrollSpeed, isGlowLayer 
       }
       lastTimestamp.current = null;
     };
-  }, [scrollSpeed]);
+  }, [scrollSpeed, isPaused]);
 
   const layerStyle = {
     backgroundPosition: `${backgroundPositionX}px 0%`,

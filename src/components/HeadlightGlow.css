@@ -25,4 +25,27 @@
   /* Reduced rotation */
   transform: rotate(5deg); /* Was 15deg */
   transform-origin: 100% 50%; /* Rotate around the light source point */
+}
+
+/* Bright circular source glow */
+.headlight-source {
+  position: absolute;
+  /* Position at the visual origin of the beam (right edge, vertical center) */
+  top: 50%; 
+  right: 0; /* Was -10%, back to original */
+  transform: translateY(-50%); 
+  
+  width: 38px; 
+  height: 38px; 
+  border-radius: 50%; 
+  
+  /* Debug Appearance */
+  background-color: magenta; /* Debug: Bright obvious color */
+  filter: none; /* Debug: Remove blur */
+  
+  /* Blend mode */
+  mix-blend-mode: normal; /* Debug: Remove blending */
+
+  /* Layering */
+  z-index: 99; 
 } 
