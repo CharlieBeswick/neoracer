@@ -1,0 +1,29 @@
+.scenery-layer-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden; /* Clip sprites outside the container */
+  pointer-events: none; /* Prevent layer from interfering with interactions */
+}
+
+.scenery-sprite {
+  /* Basic sprite styling */
+  object-fit: contain; /* Or cover, depending on desired scaling */
+  /* Add transitions or other effects if needed */
+
+  /* Glow effect removed - will be applied selectively */
+  /* filter: drop-shadow(...) */
+}
+
+/* Add specific glow for streetlights */
+.streetlight-sprite {
+  filter: drop-shadow(0 0 20px rgba(255, 255, 210, 0.7)) /* Wider, softer inner glow */
+          drop-shadow(0 0 40px rgba(255, 255, 190, 0.5)); /* Wider outer glow */
+}
+
+/* Add specific styles for palm trees if needed, e.g.: */
+.palmtree-sprite {
+  /* No glow */
+} 

@@ -1,0 +1,62 @@
+/* src/components/SunLayer.css */
+
+.sun-layer-container {
+  position: absolute;
+  /* Position top-right */
+  top: 10%; 
+  left: auto; /* Remove left positioning */
+  right: 5%; /* Position from the right */
+  /* Make 50% smaller */
+  width: 15vw; /* Was 30vw */
+  max-width: 200px; /* Was 400px */
+  /* transform: translateX(-50%); /* Remove transform used for centering */
+  aspect-ratio: 1 / 1; 
+  z-index: 1; /* Behind mountains/buildings */
+  pointer-events: none; 
+}
+
+.sun-body {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  /* Base yellow */
+  background-color: #FFD700; /* Gold/Yellow */
+
+  /* Striped effect using repeating gradient */
+  background-image: repeating-linear-gradient(
+    to bottom,
+    #FFD700, /* Yellow */
+    #FFD700 8%, /* Stripe height */
+    #FFA500 8%, /* Orange */
+    #FFA500 16%, /* Stripe height */
+    #FF4500 16%, /* Red-Orange */
+    #FF4500 24%, /* Stripe height */
+    #DC143C 24%, /* Crimson */
+    #DC143C 32% /* Stripe height */
+    /* You might need to repeat/adjust colors and percentages */
+  );
+
+  /* Red outer glow */
+  box-shadow: 0 0 30px 15px rgba(255, 0, 0, 0.6), /* Inner red glow */
+              0 0 60px 30px rgba(255, 0, 0, 0.4), /* Outer red glow */
+              0 0 90px 45px rgba(255, 100, 0, 0.2); /* Faint orange halo */
+
+  /* Optional: Add subtle animation? */
+  /* animation: pulse 5s infinite alternate; */
+}
+
+/* Keyframes for pulse animation (optional) */
+/*
+@keyframes pulse {
+  from {
+    box-shadow: 0 0 30px 15px rgba(255, 0, 0, 0.6),
+                0 0 60px 30px rgba(255, 0, 0, 0.4),
+                0 0 90px 45px rgba(255, 100, 0, 0.2);
+  }
+  to {
+    box-shadow: 0 0 35px 18px rgba(255, 0, 0, 0.7),
+                0 0 70px 35px rgba(255, 0, 0, 0.5),
+                0 0 100px 50px rgba(255, 100, 0, 0.3);
+  }
+}
+*/ 

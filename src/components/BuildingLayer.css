@@ -1,0 +1,27 @@
+/* src/components/BuildingLayer.css */
+.building-layer {
+  position: absolute;
+  bottom: 15%; /* Position slightly higher than mountains, adjust as needed */
+  left: 0;
+  width: 100%;
+  height: 60%; /* Adjust height based on sprite */
+  background-image: url('/assets/buildings.png');
+  background-repeat: repeat-x;
+  background-position: 0% 100%; /* Align sprite bottom to container bottom */
+  background-size: auto 100%; /* Scale height, auto width */
+  z-index: 4; /* Updated: Main building layer */
+  pointer-events: none;
+  will-change: background-position;
+  /* Ensure image rendering is crisp for main layer */
+  image-rendering: pixelated; /* Or crisp-edges */
+}
+
+/* Style for the glow layer */
+.building-layer.glow {
+  z-index: 3; /* Place glow behind main buildings */
+  filter: blur(4px) brightness(1.5) saturate(1.2); /* Adjust blur, brightness, saturation */
+  /* Optional: Slightly offset the glow? */
+  /* transform: translate(1px, 1px); */ 
+  /* Make glow layer less sharp */
+  image-rendering: auto; 
+} 

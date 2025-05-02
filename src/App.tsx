@@ -1,0 +1,41 @@
+import React, { useState } from 'react';
+import Menu from './components/Menu';
+import Game from './components/Game'; // Import the Game component
+
+// Define possible game states
+type GameState = 'menu' | 'playing' | 'gameover'; // Added gameover for future use
+
+function App() {
+  const [gameState, setGameState] = useState<GameState>('menu');
+
+  const startGame = () => {
+    console.log("Initializing game loop..."); // Placeholder for game loop start
+    // TODO: Add actual game initialization logic here
+    setGameState('playing');
+  };
+
+  const quitGame = () => {
+    console.log("Quitting game...");
+    // In a web context, "quitting" might mean returning to menu or just logging
+    // Closing the tab/window is up to the user
+    setGameState('menu'); // Example: return to menu
+  };
+
+  const renderGameState = () => {
+    switch (gameState) {
+      case 'menu':
+        return <Menu onPlay={startGame} onQuit={quitGame} />;
+      case 'playing':
+        // Render the actual Game component
+        return <Game onBackToMenu={() => setGameState('menu')} />;
+      // case 'gameover':
+      //   return <GameOver onRestart={startGame} onMenu={() => setGameState('menu')} />;
+      default:
+        return <Menu onPlay={startGame} onQuit={quitGame} />; // Default to menu
+    }
+  };
+
+  return <div className="App">{renderGameState()}</div>;
+}
+
+export default App; 

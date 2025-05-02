@@ -1,0 +1,21 @@
+.background-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  /* Vapourwave Gradient Sky */
+  background: linear-gradient(
+    to bottom, 
+    #4a0d4a, /* Dark magenta/purple top */
+    #870058, /* Deep Pink/Magenta */
+    #2c003e, /* Dark Violet */
+    #0b001a  /* Very dark blue/purple bottom */
+  ); 
+  /* Keep parallax effect */
+  background-repeat: repeat-x; /* Might not be needed for gradient, but harmless */
+  background-position: 0% 0%; 
+  /* background-size: auto 100%; /* Not needed for gradient */ 
+  z-index: 0; 
+  will-change: background-position; 
+} 

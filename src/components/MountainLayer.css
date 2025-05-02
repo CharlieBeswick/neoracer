@@ -1,0 +1,15 @@
+/* src/components/MountainLayer.css */
+.mountain-layer {
+  position: absolute;
+  bottom: 10%; /* Position slightly above the road horizon */
+  left: 0;
+  width: 100%;
+  height: 50%; /* Adjust height as needed for the sprite */
+  background-image: url('/assets/neoracer_mountains-removebg-preview.png');
+  background-repeat: repeat-x;
+  background-position: 0% 100%; /* Align to bottom */
+  background-size: auto 100%; /* Scale height to fit container, width auto */
+  z-index: 2; /* Updated: In front of sun */
+  pointer-events: none;
+  will-change: background-position;
+} 

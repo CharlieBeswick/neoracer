@@ -1,0 +1,26 @@
+/* src/components/PlayerCar.css */
+.player-car {
+  position: absolute;
+  width: 450px; /* Was 300px */
+  height: 225px; /* Was 150px */
+  background-image: url('/assets/car1blue.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+
+  /* Adjusted position */
+  bottom: 6.5%; /* Was 8% */
+  left: 15%; /* Start position on the left */
+  transform: translateX(0%); /* Initial transform state */
+  
+  z-index: 100; /* Ensure it's above other layers */
+  
+  /* Adjusted transition duration */
+  transition: left 5s ease-out, transform 5s ease-out;
+}
+
+.player-car.centered {
+  /* Centered position */
+  left: 50%;
+  transform: translateX(-50%); /* Center horizontally */
+} 
