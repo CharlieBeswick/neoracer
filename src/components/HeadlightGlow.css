@@ -2,9 +2,9 @@
 .headlight-glow {
   position: absolute;
   /* Position relative to PlayerCar container */
-  bottom: -40%; /* Was -15% */
+  bottom: -38%; /* Was -40% - Moved up by 2% */
   left: auto; /* Remove left */
-  right: -85%; /* Was -90% */
+  right: -75%; /* Was -85% - Moved 10% left */
   width: 500px; /* How far the beam extends */
   height: 100%; /* Match car container height roughly */
   
@@ -18,8 +18,8 @@
   /* Blend mode to illuminate road below */
   mix-blend-mode: screen; /* Try 'overlay' or 'color-dodge' too */
   
-  /* Layering: Above road overlay (6), below particles (99) and car (100) */
-  z-index: 98; /* Was 7 */
+  /* Layering: Behind parent car body */
+  z-index: -1; /* Was 98 - Place behind parent within stacking context */
   pointer-events: none;
 
   /* Reduced rotation */
@@ -31,9 +31,9 @@
 .headlight-source {
   position: absolute;
   /* Positioned relative to player-car */
-  bottom: 16%; /* Was 18% - Lowered slightly */
+  bottom: 14%; /* Was 16% - Lowered slightly */
   left: auto;  
-  right: 16%;  
+  right: 18%; /* Was 16% - Moved left */
   transform: translateY(-50%); /* Vertical centering */
   
   /* Size/Appearance */

@@ -1,0 +1,123 @@
+/* src/components/OpponentCar.css */
+.opponent-car { /* Changed class name */
+  position: absolute;
+  width: 365px; /* Was 405px - Scaled down 10% again */
+  height: 183px; /* Reverted back from 188px */
+  /* Background image set via inline style in component */
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+
+  /* Position slightly different from player? Maybe further right/different lane */
+  bottom: 9%; /* Was 8% - Moved slightly up again */
+  left: 14%; /* Was 12% - Moved slightly right again */
+  transform: translateX(0%); /* No centering logic applied */
+  
+  /* Layering: Same level or slightly below player? */
+  z-index: 99; /* Below player car (100) but above other layers */
+  
+  /* Transition if movement is added later */
+  /* transition: left 5s ease-out, transform 5s ease-out; */
+}
+
+/* Optional: Add centering if needed later */
+/*
+.opponent-car.centered {
+  left: 50%;
+  transform: translateX(-50%); 
+}
+*/
+
+/* Wheel Styling - Inherited from PlayerCar structure, uses inline style for image/animation */
+.opponent-car .rear-wheel,
+.opponent-car .front-wheel {
+  position: absolute;
+  width: 35px;  /* Was 39px - Scaled down 10% again */
+  height: 35px; /* Was 39px - Scaled down 10% again */
+  /* background-image set via inline style */
+  background-size: contain;
+  background-repeat: no-repeat;
+  z-index: 101; /* Match PlayerCar wheels */
+
+  /* Apply spin animation - duration controlled by inline style */
+  animation-name: spin;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+/* Adjusted positions based on PlayerCar */
+.opponent-car .rear-wheel {
+  bottom: 27%; /* Was 26% - Moved up again */
+  left: 24%;  /* Was 24.5% - Moved left again */
+}
+
+.opponent-car .front-wheel {
+  bottom: 27%; /* Was 26% - Moved up again */
+  right: 27.5%; /* Was 28% - Moved right */
+}
+
+/* Spin Animation (can be shared or redefined, shared is better) */
+/* Assuming spin keyframes are defined elsewhere (e.g., PlayerCar.css or a global file) */
+/* If not, uncomment this:
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+*/
+
+/* Specific styling for opponent's particle emitter position */
+.opponent-particle-wrapper .particle-emitter {
+  /* Default in Particles.css is bottom: 10% */
+  bottom: 25%; /* Was 15% - Adjust upwards by another 10% */
+  /* Keep other properties like left, width, height from the default .particle-emitter style */
+}
+
+/* --- Opponent Headlight Styles --- */
+
+/* Opponent Headlight Beam (Based on HeadlightGlow.css .headlight-glow) */
+.opponent-car .headlight-glow {
+  position: absolute;
+  /* Positioning relative to OpponentCar container - keep same as player's */
+  bottom: -20%; /* Was -40% - Moved up by 20% */
+  left: auto; 
+  right: -85%; 
+  width: 500px; 
+  height: 100%; 
+  clip-path: polygon(100% 20%, 100% 80%, 0% 50%); 
+  
+  /* Appearance - Whiteish-Blue Tint */
+  background-color: rgba(180, 220, 255, 0.2); /* Adjusted color */
+  filter: blur(10px); 
+  mix-blend-mode: screen; 
+  
+  /* Layering: Behind parent car body */
+  z-index: -1; /* Was 98 - Place behind parent within stacking context */
+  pointer-events: none;
+  transform: rotate(5deg); 
+  transform-origin: 100% 50%; 
+}
+
+/* Opponent Headlight Source (Based on HeadlightGlow.css .headlight-source) */
+.opponent-car .headlight-source {
+  position: absolute;
+  /* Positioning relative to OpponentCar container - keep same as player's */
+  bottom: 26%; /* Was 16% - Moved up by 10% */
+  left: auto;  
+  right: 16%;  
+  transform: translateY(-50%); 
+  
+  /* Size/Appearance - Whiteish-Blue Tint */
+  width: 38px; 
+  height: 38px; 
+  border-radius: 50%; 
+  background-color: rgba(200, 230, 255, 0.95); /* Adjusted color */
+  filter: blur(7px); 
+  mix-blend-mode: color-dodge; 
+
+  /* Layering - same as player's source relative to car */
+  z-index: 100; /* Below wheels (101) */
+} 
