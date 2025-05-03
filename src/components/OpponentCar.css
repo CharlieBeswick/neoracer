@@ -2,16 +2,16 @@
 .opponent-car { /* Changed class name */
   position: absolute;
   width: 365px; /* Was 405px - Scaled down 10% again */
-  height: 183px; /* Reverted back from 188px */
+  height: 183px; /* Was 203px - Scaled down 10% again */
   /* Background image set via inline style in component */
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
 
-  /* Position slightly different from player? Maybe further right/different lane */
+  /* Position */
   bottom: 9%; /* Was 8% - Moved slightly up again */
-  left: 14%; /* Was 12% - Moved slightly right again */
-  transform: translateX(0%); /* No centering logic applied */
+  left: 14%; /* Base position */
+  /* transform: translateX(0%); REMOVED - Now handled by inline style */
   
   /* Layering: Same level or slightly below player? */
   z-index: 99; /* Below player car (100) but above other layers */
@@ -168,4 +168,21 @@
   z-index: -1; /* Behind the source light */
   transition: width 0.1s linear, opacity 0.1s linear; /* Smooth transitions */
   will-change: width, opacity;
+}
+
+/* Hide opponent lights when engine off */
+.opponent-car .rear-light-source.engine-off {
+  opacity: 0;
+  transition: opacity 0.1s linear;
+}
+.opponent-car .rear-light-source.engine-off::after {
+  opacity: 0; /* Hide trail */
+}
+.opponent-car .headlight-source.engine-off {
+  opacity: 0;
+  transition: opacity 0.1s linear;
+}
+.opponent-car .headlight-glow.engine-off {
+  opacity: 0;
+  transition: opacity 0.1s linear;
 } 

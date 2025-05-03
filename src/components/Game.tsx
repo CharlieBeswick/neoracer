@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef, CSSProperties } from 'react';
 import Background from './Background';
 import MountainLayer from './MountainLayer';
 import BuildingLayer from './BuildingLayer';
@@ -27,6 +27,15 @@ const SUN_SPEED_FACTOR = 0.05; // Sun scrolls very, very slowly
 const TRACK_LENGTH_PIXELS = 120000; // Define total track length here
 const OPPONENT_TARGET_SPEED = 150; // Example: Define opponent's eventual target speed
 
+// Define constants for physics
+const ACCELERATION_RATE = 150; // Player acceleration rate (Increased from 120)
+const DECELERATION_RATE = ACCELERATION_RATE / 3; 
+const ENGINE_OFF_DECELERATION_RATE = ACCELERATION_RATE; 
+const BRAKING_RATE = ACCELERATION_RATE * 2; 
+const MAX_SPEED = 1200; // Player max speed
+const OPPONENT_MAX_SPEED = 1400; 
+const OPPONENT_ACCELERATION_RATE_SIMPLE = ACCELERATION_RATE * 0.8; // Opponent accelerates 20% slower than player (was 0.9)
+
 const Game: React.FC<GameProps> = ({ onBackToMenu }) => {
   // State to manage the player's current scrolling speed
   const [currentSpeed, setCurrentSpeed] = useState(BASE_SCROLL_SPEED);
@@ -35,6 +44,18 @@ const Game: React.FC<GameProps> = ({ onBackToMenu }) => {
   const [showRotationOverlay, setShowRotationOverlay] = useState(false);
   const [isMuted, setIsMuted] = useState(false); // Mute state
   const [isEngineOn, setIsEngineOn] = useState(false); // Engine state, starts OFF
+  const [isAccelerating, setIsAccelerating] = useState(false); // State for acceleration button press
+  const [isBraking, setIsBraking] = useState(false); // State for braking button press
+  const [scrollPos, setScrollPos] = useState(0); // State for main scroll position (Road)
+
+  // Opponent State
+  const [opponentCurrentSpeed, setOpponentCurrentSpeed] = useState(BASE_SCROLL_SPEED); 
+  const [targetRelativeDistance, setTargetRelativeDistance] = useState(0); // Target offset based on physics
+  const [opponentVisualOffsetX, setOpponentVisualOffsetX] = useState(0); // Smoothed visual offset
+
+  // Race State
+  const [countdown, setCountdown] = useState<number | null>(null); // 3, 2, 1, null
+  const [raceStarted, setRaceStarted] = useState(false);
 
   // --- Pause Logic ---
   const isPaused = showRotationOverlay; // Pause game if overlay is shown
@@ -45,6 +66,8 @@ const Game: React.FC<GameProps> = ({ onBackToMenu }) => {
   const raceAudioRef = useRef<HTMLAudioElement | null>(null);
   const idleStartTimeoutRef = useRef<NodeJS.Timeout | null>(null); // Ref for the 2-second delay timeout
   const [raceSoundPlayed, setRaceSoundPlayed] = useState(false); // Track if race sound played in current high-speed phase
+  const lastFrameTimeRef = useRef<number | null>(null); // Ref for game loop timing
+  const animationFrameIdRef = useRef<number | null>(null); // Ref for animation frame ID
 
   // --- Toggle Mute Function ---
   const toggleMute = () => {
@@ -53,13 +76,28 @@ const Game: React.FC<GameProps> = ({ onBackToMenu }) => {
 
   // --- Toggle Engine Function ---
   const toggleEngine = () => {
-    // Prevent turning off if moving
     if (isEngineOn && currentSpeed > 0) {
       console.warn("Cannot turn off engine while moving.");
-      // Optionally provide user feedback here (e.g., visual cue)
       return;
     }
-    setIsEngineOn(prev => !prev);
+    const turningOn = !isEngineOn;
+    setIsEngineOn(turningOn);
+
+    if (turningOn) {
+        // Reset race state and start countdown when turning engine ON
+        setRaceStarted(false);
+        setCountdown(3); 
+        // Reset speeds and positions?
+        setCurrentSpeed(0);
+        setOpponentCurrentSpeed(0);
+        setTargetRelativeDistance(0);
+        setOpponentVisualOffsetX(0);
+        setScrollPos(0); // Reset background scroll too
+    } else {
+        // If turning off, cancel countdown
+        setCountdown(null);
+        setRaceStarted(false); // Ensure race stops if engine turned off
+    }
   };
 
   // --- Audio Loading ---
@@ -176,6 +214,118 @@ const Game: React.FC<GameProps> = ({ onBackToMenu }) => {
     // Add all relevant dependencies
   }, [currentSpeed, isPaused, isMuted, isEngineOn, raceSoundPlayed]);
 
+  // --- Countdown Timer Logic ---
+  useEffect(() => {
+      if (countdown === null || countdown <= 0) {
+          return; // No countdown active or finished
+      }
+
+      const timerId = setTimeout(() => {
+          setCountdown(prev => (prev !== null ? prev - 1 : null));
+      }, 1000); // 1 second interval
+
+      // Cleanup timeout if countdown changes or component unmounts
+      return () => clearTimeout(timerId);
+  }, [countdown]);
+
+  // --- Start Race Effect ---
+  useEffect(() => {
+      if (countdown === 0) {
+          console.log("Race START!"); // Debug log
+          setRaceStarted(true);
+          setCountdown(null); // Clear countdown display
+      }
+  }, [countdown]);
+
+  // --- Game Loop for Speed and Scroll Position Update --- 
+  useEffect(() => {
+    const gameLoop = (timestamp: number) => {
+      if (lastFrameTimeRef.current === null) {
+        lastFrameTimeRef.current = timestamp; // Initialize on first frame
+        animationFrameIdRef.current = requestAnimationFrame(gameLoop);
+        return;
+      }
+
+      const deltaTime = (timestamp - lastFrameTimeRef.current) / 1000; // Time delta in seconds
+      lastFrameTimeRef.current = timestamp;
+
+      let updatedSpeed = currentSpeed; 
+      let updatedOpponentSpeed = opponentCurrentSpeed;
+
+      if (!isPaused) { 
+        let speedChange = 0;
+        if (isBraking) { 
+            speedChange = -BRAKING_RATE * deltaTime;
+        } else if (isEngineOn) { 
+          if (isAccelerating) {
+            speedChange = ACCELERATION_RATE * deltaTime;
+          } else {
+            speedChange = -DECELERATION_RATE * deltaTime;
+          }
+        } else { 
+          speedChange = -ENGINE_OFF_DECELERATION_RATE * deltaTime;
+        }
+        setCurrentSpeed(prevSpeed => {
+          const newSpeed = prevSpeed + speedChange;
+          updatedSpeed = Math.max(0, Math.min(newSpeed, MAX_SPEED));
+          return updatedSpeed;
+        });
+
+        // --- Player Scroll Position Update ---
+        if (updatedSpeed > 0 || speedChange !== 0) { 
+          setScrollPos(prevPos => prevPos - updatedSpeed * deltaTime); 
+        }
+
+        // --- Opponent Speed Update Logic --- 
+        setOpponentCurrentSpeed(prevOpponentSpeed => {
+            let newOpponentSpeed = prevOpponentSpeed;
+
+            // Opponent accelerates only if engine is on AND race has started
+            if (isEngineOn && raceStarted) { 
+                const opponentSpeedChange = OPPONENT_ACCELERATION_RATE_SIMPLE * deltaTime;
+                newOpponentSpeed += opponentSpeedChange;
+            } else if (!isEngineOn) { // Ensure opponent stops if engine is turned off 
+                newOpponentSpeed = 0;
+            } 
+            // (Else: Engine is on but race hasn't started - speed stays the same or decelerates? 
+            //  Let's keep it simple: speed only increases if raceStarted)
+
+            const finalOpponentSpeed = Math.max(0, Math.min(newOpponentSpeed, OPPONENT_MAX_SPEED));
+            updatedOpponentSpeed = finalOpponentSpeed; 
+            return finalOpponentSpeed;
+        });
+
+        // --- Target Relative Distance Update ---
+        const speedDifference = updatedOpponentSpeed - updatedSpeed;
+        setTargetRelativeDistance(prevTarget => prevTarget + speedDifference * deltaTime);
+
+        // --- Smoothed Visual Offset Update (Lerp) ---
+        const LERP_FACTOR = 0.1; // Adjust for more/less smoothing (lower = smoother, slower)
+        setOpponentVisualOffsetX(prevVisualOffset => 
+             prevVisualOffset + (targetRelativeDistance - prevVisualOffset) * LERP_FACTOR
+        );
+        // Note: Using LERP_FACTOR directly is frame-rate dependent smoothing.
+        // For frame-rate independence: adjustFactor = 1 - Math.exp(-deltaTime * SMOOTHING_CONSTANT)
+        // Example: const SMOOTHING = 5; const lerpFactor = 1 - Math.exp(-deltaTime * SMOOTHING);
+
+      }
+      animationFrameIdRef.current = requestAnimationFrame(gameLoop);
+    };
+
+    // Start the loop
+    animationFrameIdRef.current = requestAnimationFrame(gameLoop);
+
+    // Cleanup function: cancel the animation frame when component unmounts or dependencies change
+    return () => {
+      if (animationFrameIdRef.current) {
+        cancelAnimationFrame(animationFrameIdRef.current);
+      }
+      lastFrameTimeRef.current = null; // Reset ref
+    };
+  // isAccelerating and isBraking are derived from events, not needed as dependency directly
+  // isEngineOn, isPaused trigger state updates which cause re-render anyway,
+  // but including them ensures loop logic always has latest state if needed for complex conditions.
+  }, [isEngineOn, isPaused, isAccelerating, isBraking, targetRelativeDistance]); // Add targetRelativeDistance dependency for lerp
 
   // --- Fullscreen Logic ---
   const checkFullscreenStatus = () => {
@@ -234,32 +384,39 @@ const Game: React.FC<GameProps> = ({ onBackToMenu }) => {
     };
   }, [checkOrientation]);
 
-
-  // Calculate speeds for different layers
-  const roadScrollSpeed = currentSpeed;
-  const backgroundScrollSpeed = currentSpeed * BACKGROUND_SPEED_FACTOR;
-  const mountainScrollSpeed = currentSpeed * MOUNTAIN_SPEED_FACTOR; // Calculate mountain speed
-  const buildingScrollSpeed = currentSpeed * BUILDING_SPEED_FACTOR; // Calculate building speed
-  const sunScrollSpeed = currentSpeed * SUN_SPEED_FACTOR; // Calculate sun speed
-
-  // --- Handle Accelerate ---
-  const handleAccelerate = () => {
-    if (isEngineOn) { // Only accelerate if engine is on
-        setCurrentSpeed(prev => prev + 50);
-    } else {
-        console.log("Engine is off, cannot accelerate.");
-        // Optional: visual feedback
-    }
+  // --- Event Handlers for Acceleration --- 
+  const handleAccelerationStart = () => {
+      if (isEngineOn && !isPaused) { // Only accelerate if engine on and not paused
+          setIsAccelerating(true);
+      }
   };
 
-  // --- Handle Decelerate ---
-  const handleDecelerate = () => {
-      setCurrentSpeed(prev => Math.max(0, prev - 50));
+  const handleAccelerationEnd = () => {
+      setIsAccelerating(false);
   };
 
-  // --- Calculate Derived Opponent Speed --- 
-  // Opponent speed is set to 90% of the player's current speed.
-  const opponentSpeed = Math.max(0, currentSpeed * 0.9); 
+  // --- Event Handlers for Braking --- 
+  const handleBrakeStart = () => {
+      // Allow braking even if engine is off, but not if paused
+      if (!isPaused) {
+          setIsBraking(true);
+      }
+  };
+
+  const handleBrakeEnd = () => {
+      setIsBraking(false);
+  };
+
+  // Calculate background positions for layers based on scrollPos
+  const roadBgPosition = `${scrollPos}px 0%`;
+  const backgroundBgPosition = `${scrollPos * BACKGROUND_SPEED_FACTOR}px 0%`;
+  const mountainBgPosition = `${scrollPos * MOUNTAIN_SPEED_FACTOR}px 0%`;
+  const buildingBgPosition = `${scrollPos * BUILDING_SPEED_FACTOR}px 0%`;
+  // Sun uses transform, so calculate the X offset
+  const sunTranslateX = scrollPos * SUN_SPEED_FACTOR;
+
+  // Use the SMOOTHED opponentVisualOffsetX for the transform
+  const relativeOpponentX = opponentVisualOffsetX;
 
   return (
     <div className="game-container">
@@ -270,23 +427,31 @@ const Game: React.FC<GameProps> = ({ onBackToMenu }) => {
         </div>
       )}
 
+      {/* Conditionally render countdown */} 
+      {countdown !== null && countdown > 0 && (
+          <div className="countdown-display">{countdown}</div>
+      )}
+      {countdown === 0 && (
+          <div className="countdown-display go">GO!</div>
+      ) }
+
       {/* Layer 0: Background Gradient */}
-      <Background scrollSpeed={backgroundScrollSpeed} isPaused={isPaused} />
+      <Background bgPositionX={backgroundBgPosition} />
 
       {/* Layer 1: Sun */}
-      <SunLayer scrollSpeed={sunScrollSpeed} isPaused={isPaused} />
+      <SunLayer translateX={sunTranslateX} />
 
       {/* Layer 2: Mountains */}
-      <MountainLayer scrollSpeed={mountainScrollSpeed} isPaused={isPaused} />
+      <MountainLayer bgPositionX={mountainBgPosition} />
 
       {/* Layer 3: Building Glow */}
-      <BuildingLayer scrollSpeed={buildingScrollSpeed} isGlowLayer={true} isPaused={isPaused} />
+      <BuildingLayer bgPositionX={buildingBgPosition} isGlowLayer={true} />
 
       {/* Layer 4: Buildings (Main) */}
-      <BuildingLayer scrollSpeed={buildingScrollSpeed} isPaused={isPaused} />
+      <BuildingLayer bgPositionX={buildingBgPosition} />
 
       {/* Layer 5: Road */}
-      <Road scrollSpeed={roadScrollSpeed} isPaused={isPaused} />
+      <Road bgPositionX={roadBgPosition} />
 
       {/* Layer 6: Road Overlay */}
       {/* The ::before pseudo-element is styled in Road.css */}
@@ -295,16 +460,44 @@ const Game: React.FC<GameProps> = ({ onBackToMenu }) => {
       <PlayerCar currentSpeed={currentSpeed} isEngineOn={isEngineOn} isPaused={isPaused} />
 
       {/* Layer 99: Opponent Car */}
-      <OpponentCar opponentSpeed={opponentSpeed} isEngineOn={isEngineOn} isPaused={isPaused} />
+      <OpponentCar 
+        opponentSpeed={opponentCurrentSpeed} 
+        relativeX={relativeOpponentX} // Pass the calculated visual offset
+        isEngineOn={isEngineOn} 
+        isPaused={isPaused} 
+      />
 
       {/* Layer 10: UI Overlay (Note: Car z-index is higher) */}
       <div className="game-overlay">
-        {/* Temporary: Display game status or score */}
-        <p>Game Running... (Speed: {currentSpeed.toFixed(0)}) Engine: {isEngineOn ? 'ON' : 'OFF'}</p>
+        {/* Display UI speed (currentSpeed / 10) and engine state */}
+        <p>
+          Player Speed: {(currentSpeed / 10).toFixed(0)} | 
+          Opponent Speed: {(opponentCurrentSpeed / 10).toFixed(0)} | 
+          Engine: {isEngineOn ? 'ON' : 'OFF'}
+        </p>
         {/* Control buttons */}
-        <button onClick={handleAccelerate} disabled={!isEngineOn}>Accelerate</button> {/* Disable button if engine off */}
-        <button onClick={handleDecelerate}>Decelerate</button>
-        <button onClick={toggleEngine} disabled={isEngineOn && currentSpeed > 0}> {/* Disable turning off if moving */}
+        <button 
+          onMouseDown={handleAccelerationStart}
+          onMouseUp={handleAccelerationEnd}
+          onMouseLeave={handleAccelerationEnd} // Stop accelerating if mouse leaves button
+          onTouchStart={handleAccelerationStart} // Handle touch events
+          onTouchEnd={handleAccelerationEnd}
+          disabled={!isEngineOn || isPaused || isBraking} // Also disable accel if braking
+        >
+          Accelerate
+        </button> 
+        <button 
+            onMouseDown={handleBrakeStart}
+            onMouseUp={handleBrakeEnd}
+            onMouseLeave={handleBrakeEnd}
+            onTouchStart={handleBrakeStart}
+            onTouchEnd={handleBrakeEnd}
+            disabled={isPaused} // Disable only if paused
+            style={{marginLeft: '10px'}}
+        >
+            Brake
+        </button>
+        <button onClick={toggleEngine} disabled={isEngineOn && currentSpeed > 0} style={{marginLeft: '10px'}}> 
             {isEngineOn ? 'Engine Stop' : 'Engine Start'}
         </button>
         <button onClick={toggleFullscreen} style={{marginLeft: '10px'}}>

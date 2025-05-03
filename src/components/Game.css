@@ -46,4 +46,38 @@
 
 .rotation-overlay p {
   max-width: 80%;
+}
+
+/* Countdown Display */
+.countdown-display {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 15rem; /* Very large */
+  font-weight: bold;
+  font-family: 'Arial Black', sans-serif;
+  color: #ffffff; /* Base white */
+  /* Neon Blue Glow */
+  text-shadow: 
+    0 0 10px #0ff, 
+    0 0 20px #0ff, 
+    0 0 40px #0ff, 
+    0 0 70px #00aaff, 
+    0 0 100px #00aaff; 
+  z-index: 500; /* Above background, below UI overlay */
+  pointer-events: none; /* Don't interfere with clicks */
+  opacity: 0.9; /* Slightly transparent */
+}
+
+/* Optional: Style for "GO!" text */
+.countdown-display.go {
+  font-size: 12rem; /* Slightly smaller for text? */
+  color: #00ff00; /* Green */
+   text-shadow: 
+    0 0 10px #0f0, 
+    0 0 20px #0f0, 
+    0 0 40px #0f0, 
+    0 0 70px #0f0, 
+    0 0 100px #0f0; 
 } 

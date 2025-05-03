@@ -60,15 +60,16 @@ const PlayerCar: React.FC<PlayerCarProps> = ({ currentSpeed, isEngineOn, isPause
   };
 
   const rearLightSourceStyle = calculateTrailStyle(currentSpeed);
+  const engineOffClass = !isEngineOn ? 'engine-off' : ''; // Class to add when engine is off
 
   return (
     <div className={carClassName}>
       {/* Front Lights */}
-      <HeadlightGlow />
-      <div className="headlight-source"></div> {/* Source */}
+      <HeadlightGlow beamClassName={`headlight-glow ${engineOffClass}`.trim()} />
+      <div className={`headlight-source ${engineOffClass}`.trim()}></div> {/* Source */}
       
       {/* Rear Lights (Source Only) */}
-      <div className="rear-light-source" style={rearLightSourceStyle}></div> {/* Rear Source with Trail */}
+      <div className={`rear-light-source ${engineOffClass}`.trim()} style={rearLightSourceStyle}></div> {/* Rear Source with Trail */}
 
       {/* Emitters */}
       <ParticleEmitter carSpeed={currentSpeed} isPaused={isPaused} />

@@ -1,47 +1,16 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React from 'react';
 import './BuildingLayer.css';
 
 interface BuildingLayerProps {
-  scrollSpeed: number;
+  bgPositionX: string; // Accept position string directly
   isGlowLayer?: boolean;
-  isPaused?: boolean;
 }
 
-const BuildingLayer: React.FC<BuildingLayerProps> = ({ scrollSpeed, isGlowLayer = false, isPaused = false }) => {
-  const [backgroundPositionX, setBackgroundPositionX] = useState(0);
-  const animationFrameId = useRef<number | null>(null);
-  const lastTimestamp = useRef<number | null>(null);
-
-  useEffect(() => {
-    const animate = (timestamp: number) => {
-      if (lastTimestamp.current === null) {
-        lastTimestamp.current = timestamp;
-        animationFrameId.current = requestAnimationFrame(animate);
-        return;
-      }
-      const deltaTime = (timestamp - lastTimestamp.current) / 1000;
-      lastTimestamp.current = timestamp;
-
-      if (!isPaused) {
-        setBackgroundPositionX(prevPos => (prevPos - scrollSpeed * deltaTime));
-      }
-
-      animationFrameId.current = requestAnimationFrame(animate);
-    };
-
-    lastTimestamp.current = null;
-    animationFrameId.current = requestAnimationFrame(animate);
-
-    return () => {
-      if (animationFrameId.current) {
-        cancelAnimationFrame(animationFrameId.current);
-      }
-      lastTimestamp.current = null;
-    };
-  }, [scrollSpeed, isPaused]);
-
+const BuildingLayer: React.FC<BuildingLayerProps> = ({ bgPositionX, isGlowLayer = false }) => {
+  // No internal state or effects needed
+  
   const layerStyle = {
-    backgroundPosition: `${backgroundPositionX}px 0%`,
+    backgroundPosition: bgPositionX,
   };
 
   const layerClassName = `building-layer ${isGlowLayer ? 'glow' : ''}`.trim();

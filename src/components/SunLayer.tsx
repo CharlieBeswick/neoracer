@@ -1,47 +1,16 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React from 'react';
 import './SunLayer.css';
 
 interface SunLayerProps {
-  scrollSpeed: number;
-  isPaused?: boolean;
+  translateX: number; // Accept X offset directly
 }
 
-const SunLayer: React.FC<SunLayerProps> = ({ scrollSpeed, isPaused = false }) => {
-  const [positionX, setPositionX] = useState(0);
-  const animationFrameId = useRef<number | null>(null);
-  const lastTimestamp = useRef<number | null>(null);
-
-  useEffect(() => {
-    const animate = (timestamp: number) => {
-      if (lastTimestamp.current === null) {
-        lastTimestamp.current = timestamp;
-        animationFrameId.current = requestAnimationFrame(animate);
-        return;
-      }
-      const deltaTime = (timestamp - lastTimestamp.current) / 1000;
-      lastTimestamp.current = timestamp;
-
-      if (!isPaused) {
-        setPositionX(prevPos => (prevPos - scrollSpeed * deltaTime));
-      }
-
-      animationFrameId.current = requestAnimationFrame(animate);
-    };
-
-    lastTimestamp.current = null;
-    animationFrameId.current = requestAnimationFrame(animate);
-
-    return () => {
-      if (animationFrameId.current) {
-        cancelAnimationFrame(animationFrameId.current);
-      }
-      lastTimestamp.current = null;
-    };
-  }, [scrollSpeed, isPaused]);
+const SunLayer: React.FC<SunLayerProps> = ({ translateX }) => {
+  // No internal state or effects needed
 
   // Apply transform for parallax, keep other CSS positioning
   const layerStyle = {
-    transform: `translateX(${positionX}px)`,
+    transform: `translateX(${translateX}px)`,
   };
 
   return (

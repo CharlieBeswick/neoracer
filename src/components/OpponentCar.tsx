@@ -8,6 +8,7 @@ import './OpponentCar.css'; // Use a separate CSS file
 
 interface OpponentCarProps {
   opponentSpeed: number; // Use a specific prop name
+  relativeX: number; // Add prop for relative horizontal offset
   isEngineOn: boolean; // Add engine state prop
   isPaused?: boolean; // Add isPaused prop
 }
@@ -22,7 +23,7 @@ interface StyleWithCustomProps extends CSSProperties {
   '--trail-opacity'?: string;
 }
 
-const OpponentCar: React.FC<OpponentCarProps> = ({ opponentSpeed, isEngineOn, isPaused = false }) => {
+const OpponentCar: React.FC<OpponentCarProps> = ({ opponentSpeed, relativeX, isEngineOn, isPaused = false }) => {
   // Opponent car might not need centering logic, remove if not needed
   // const [isCentered, setIsCentered] = useState(false);
   // useEffect(() => { ... centering logic }, [opponentSpeed]);
@@ -60,18 +61,27 @@ const OpponentCar: React.FC<OpponentCarProps> = ({ opponentSpeed, isEngineOn, is
     };
   };
 
-  const rearLightSourceStyle = calculateTrailStyle(opponentSpeed); // Use opponentSpeed
+  const rearLightSourceStyle = calculateTrailStyle(opponentSpeed);
+  const engineOffClass = !isEngineOn ? 'engine-off' : '';
+
+  // Apply dynamic position using transform: translateX()
+  // Base position (left: 14%) comes from OpponentCar.css
+  const carPositionStyle = {
+      transform: `translateX(${relativeX}px)`,
+      // Ensure left isn't set inline, use CSS default
+      left: undefined, 
+  };
 
   return (
-    // Use the opponent-car class
-    <div className={carClassName} style={carBodyStyle}>
+    // Apply positioning style and background style
+    <div className={carClassName} style={{ ...carPositionStyle, ...carBodyStyle }}>
       {/* Front Lights */}
-      <HeadlightGlow /> 
-      <div className="headlight-source"></div>
+      <HeadlightGlow beamClassName={`headlight-glow ${engineOffClass}`.trim()} /> 
+      <div className={`headlight-source ${engineOffClass}`.trim()}></div>
 
       {/* Rear Lights (Source Only) */}
       {/* <HeadlightGlow beamClassName="rear-light-glow" /> REMOVED */}
-      <div className="rear-light-source" style={rearLightSourceStyle}></div> {/* Rear Source with Trail */}
+      <div className={`rear-light-source ${engineOffClass}`.trim()} style={rearLightSourceStyle}></div> {/* Rear Source with Trail */}
 
       {/* Wrap ParticleEmitter in a div for specific styling */}
       <div className="opponent-particle-wrapper">

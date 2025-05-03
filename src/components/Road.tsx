@@ -1,54 +1,15 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React from 'react';
 import './Road.css';
 
 interface RoadProps {
-  scrollSpeed: number; // Pixels per second
-  isPaused?: boolean; // Add prop
+  bgPositionX: string; // Accept position string directly
 }
 
-const Road: React.FC<RoadProps> = ({ scrollSpeed, isPaused = false }) => {
-  const [scrollPos, setScrollPos] = useState(0);
-  const animationFrameId = useRef<number | null>(null);
-  const lastTimestamp = useRef<number | null>(null);
-
-  useEffect(() => {
-    const animate = (timestamp: number) => {
-      if (lastTimestamp.current === null) {
-        lastTimestamp.current = timestamp;
-        animationFrameId.current = requestAnimationFrame(animate);
-        return;
-      }
-
-      const deltaTime = (timestamp - lastTimestamp.current) / 1000; // seconds
-      lastTimestamp.current = timestamp;
-
-      // Pause check
-      if (!isPaused) {
-        setScrollPos(prevPos => {
-          const newPos = prevPos - scrollSpeed * deltaTime;
-          return newPos; // CSS handles the wrap-around
-        });
-      }
-
-      animationFrameId.current = requestAnimationFrame(animate);
-    };
-
-    // Reset timestamp when speed changes (or on initial mount)
-    lastTimestamp.current = null; 
-    animationFrameId.current = requestAnimationFrame(animate);
-
-    // Cleanup function
-    return () => {
-      if (animationFrameId.current) {
-        cancelAnimationFrame(animationFrameId.current);
-      }
-      lastTimestamp.current = null;
-    };
-    // Rerun effect if scrollSpeed changes
-  }, [scrollSpeed, isPaused]); 
-
+const Road: React.FC<RoadProps> = ({ bgPositionX }) => {
+  // No internal state or effects needed
+  
   const roadStyle = {
-    backgroundPosition: `${scrollPos}px 0%`,
+    backgroundPosition: bgPositionX,
   };
 
   return <div className="road-layer" style={roadStyle}></div>;

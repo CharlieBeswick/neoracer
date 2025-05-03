@@ -93,6 +93,27 @@
   z-index: 101; 
 }
 
+.player-car .rear-light-source.engine-off {
+  opacity: 0;
+  transition: opacity 0.1s linear; /* Optional fade out */
+}
+
+.player-car .rear-light-source.engine-off::after {
+  opacity: 0; /* Hide trail too */
+}
+
+/* Hide front light source when engine off */
+.player-car .headlight-source.engine-off {
+  opacity: 0;
+  transition: opacity 0.1s linear; 
+}
+
+/* Hide front light beam when engine off */
+.player-car .headlight-glow.engine-off {
+  opacity: 0;
+  transition: opacity 0.1s linear; 
+}
+
 /* Player Rear Light Trail Pseudo-Element */
 .player-car .rear-light-source::after {
   content: '';
