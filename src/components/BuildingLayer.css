@@ -19,7 +19,7 @@
 /* Style for the glow layer */
 .building-layer.glow {
   z-index: 3; /* Place glow behind main buildings */
-  filter: blur(4px) brightness(1.5) saturate(1.2); /* Adjust blur, brightness, saturation */
+  filter: blur(6px) brightness(1.8) saturate(1.5); /* Increased values (was 4px, 1.5, 1.2) */
   /* Optional: Slightly offset the glow? */
   /* transform: translate(1px, 1px); */ 
   /* Make glow layer less sharp */

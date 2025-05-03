@@ -1,11 +1,16 @@
 import React from 'react';
 import './HeadlightGlow.css';
 
-const HeadlightGlow: React.FC = () => {
-  // The container now only renders the beam
+interface HeadlightGlowProps {
+  beamClassName?: string; // Optional class name for the beam div
+}
+
+const HeadlightGlow: React.FC<HeadlightGlowProps> = ({ beamClassName }) => {
+  // Use the provided class name, or default to 'headlight-glow'
+  const classNameToUse = beamClassName || 'headlight-glow';
   return (
-    <div className="headlight-glow">
-      {/* Source element moved to PlayerCar */}
+    <div className={classNameToUse}>
+      {/* Source element moved to PlayerCar/OpponentCar */}
     </div>
   );
 };

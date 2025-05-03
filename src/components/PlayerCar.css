@@ -63,4 +63,48 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+/* --- Player Rear Light Styles --- */
+
+/* Player Rear Light Beam - REMOVED */
+/* 
+.player-car .rear-light-glow { ... rule removed ... } 
+*/
+
+/* Player Rear Light Source */
+.player-car .rear-light-source {
+  position: absolute;
+  /* Positioned relative to player-car - REAR */
+  bottom: 21%; /* Was 19% - Moved up 2% */
+  right: auto;  
+  left: 16%;  /* Was 20% (originally 18%) - Corrected to move left */
+  transform: translateY(-50%); 
+  
+  /* Size/Appearance - Red */
+  width: 30px; 
+  height: 30px; 
+  border-radius: 50%; 
+  background-color: rgba(255, 40, 40, 1); /* Fully opaque, slightly adjusted red */
+  filter: blur(12px); /* Was 10px - Increased blur further */
+  mix-blend-mode: color-dodge; 
+
+  /* Layering - Above car body (100), same as wheels */
+  z-index: 101; 
+}
+
+/* Player Rear Light Trail Pseudo-Element */
+.player-car .rear-light-source::after {
+  content: '';
+  position: absolute;
+  top: 0; /* Align vertically with source */
+  height: 100%; /* Match source height */
+  right: 90%; /* Start trail just to the left of the source center */
+  width: var(--trail-width, 0px); /* Dynamic width */
+  opacity: var(--trail-opacity, 0); /* Dynamic opacity */
+  background: linear-gradient(to left, rgba(255, 40, 40, 0.95), rgba(255, 40, 40, 0)); /* Brighter start */
+  border-radius: 0 50% 50% 0 / 0 50% 50% 0; /* Rounded tail */
+  z-index: -1; /* Behind the source light */
+  transition: width 0.1s linear, opacity 0.1s linear; /* Smooth transitions */
+  will-change: width, opacity;
 } 

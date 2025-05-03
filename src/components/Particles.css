@@ -2,7 +2,7 @@
 .particle-emitter {
   position: absolute;
   /* Position near rear-left of PlayerCar container */
-  bottom: 10%; 
+  bottom: 15%; /* Was 10% - Moved up 5% */
   left: 10%; /* Position near the left edge of the car */
   transform: translateX(0%); /* No horizontal centering needed */
   width: 15%; /* Narrower emission zone relative to car */
@@ -31,5 +31,21 @@
       calc(var(--random-y, 0) * -30px - 15px) /* Random slight upward drift */
     ) scale(0.1); 
     opacity: 0;
+  }
+}
+
+/* Animation for idle smoke/dust particles */
+@keyframes idleParticleAnimation {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.8; /* Start slightly transparent */
+  }
+  100% {
+    /* Move upward, with slight random horizontal drift */
+    transform: translate(
+      calc(var(--random-x, 0.5) * 40px - 20px), /* Gentle horizontal drift */
+      -100px /* Move upwards */
+    ) scale(0.5); /* Shrink slightly */
+    opacity: 0; /* Fade out */
   }
 } 

@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import ParticleEmitter from './ParticleEmitter'; // Import ParticleEmitter
+import IdleParticleEmitter from './IdleParticleEmitter'; // Import Idle Emitter
 import HeadlightGlow from './HeadlightGlow'; // Import HeadlightGlow
 // Note: Opponent car doesn't need HeadlightGlow for now
 // import HeadlightGlow from './HeadlightGlow'; 
@@ -7,13 +8,21 @@ import './OpponentCar.css'; // Use a separate CSS file
 
 interface OpponentCarProps {
   opponentSpeed: number; // Use a specific prop name
+  isEngineOn: boolean; // Add engine state prop
+  isPaused?: boolean; // Add isPaused prop
 }
 
 // Keep tyre image consistent for now
 const TYRE_IMAGE_SRC = '/assets/tyre1.png'; 
 const OPPONENT_CAR_BODY_SRC = '/assets/orangecar1nowheels.png'; // Use the orange car
 
-const OpponentCar: React.FC<OpponentCarProps> = ({ opponentSpeed }) => {
+// --- Define interface allowing custom properties ---
+interface StyleWithCustomProps extends CSSProperties {
+  '--trail-width'?: string;
+  '--trail-opacity'?: string;
+}
+
+const OpponentCar: React.FC<OpponentCarProps> = ({ opponentSpeed, isEngineOn, isPaused = false }) => {
   // Opponent car might not need centering logic, remove if not needed
   // const [isCentered, setIsCentered] = useState(false);
   // useEffect(() => { ... centering logic }, [opponentSpeed]);
@@ -33,15 +42,42 @@ const OpponentCar: React.FC<OpponentCarProps> = ({ opponentSpeed }) => {
     backgroundImage: `url(${OPPONENT_CAR_BODY_SRC})`
   };
 
+  // --- Calculate Trail Style (Reusing logic) --- 
+  const calculateTrailStyle = (speed: number): StyleWithCustomProps => { // Use extended interface
+    const minSpeedForTrail = 20;
+    if (speed < minSpeedForTrail) {
+      return { 
+          '--trail-width': '0px', 
+          '--trail-opacity': '0' 
+      }; // No trail at low speed
+    }
+    const trailWidth = Math.min(250, speed * 1.0); 
+    const trailOpacity = Math.max(0.2, 0.7 - speed * 0.0015); 
+
+    return {
+      '--trail-width': `${trailWidth}px`,
+      '--trail-opacity': `${trailOpacity}`,
+    };
+  };
+
+  const rearLightSourceStyle = calculateTrailStyle(opponentSpeed); // Use opponentSpeed
+
   return (
     // Use the opponent-car class
     <div className={carClassName} style={carBodyStyle}>
-      <HeadlightGlow />
+      {/* Front Lights */}
+      <HeadlightGlow /> 
+      <div className="headlight-source"></div>
+
+      {/* Rear Lights (Source Only) */}
+      {/* <HeadlightGlow beamClassName="rear-light-glow" /> REMOVED */}
+      <div className="rear-light-source" style={rearLightSourceStyle}></div> {/* Rear Source with Trail */}
+
       {/* Wrap ParticleEmitter in a div for specific styling */}
       <div className="opponent-particle-wrapper">
-        <ParticleEmitter carSpeed={opponentSpeed} />
+        <ParticleEmitter carSpeed={opponentSpeed} isPaused={isPaused} />
+        <IdleParticleEmitter carSpeed={opponentSpeed} isEngineOn={isEngineOn} isPaused={isPaused} />
       </div>
-      <div className="headlight-source"></div>
       <div className="rear-wheel" style={wheelAnimationStyle}></div>
       <div className="front-wheel" style={wheelAnimationStyle}></div>
     </div>

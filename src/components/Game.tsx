@@ -292,10 +292,10 @@ const Game: React.FC<GameProps> = ({ onBackToMenu }) => {
       {/* The ::before pseudo-element is styled in Road.css */}
 
       {/* Layer 100: Player Car */}
-      <PlayerCar currentSpeed={currentSpeed} />
+      <PlayerCar currentSpeed={currentSpeed} isEngineOn={isEngineOn} isPaused={isPaused} />
 
       {/* Layer 99: Opponent Car */}
-      <OpponentCar opponentSpeed={opponentSpeed} />
+      <OpponentCar opponentSpeed={opponentSpeed} isEngineOn={isEngineOn} isPaused={isPaused} />
 
       {/* Layer 10: UI Overlay (Note: Car z-index is higher) */}
       <div className="game-overlay">
