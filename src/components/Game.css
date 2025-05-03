@@ -80,4 +80,36 @@
     0 0 40px #0f0, 
     0 0 70px #0f0, 
     0 0 100px #0f0; 
+}
+
+/* Race Outcome Display */
+.race-outcome {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 10rem; /* Slightly smaller than countdown */
+  font-weight: bold;
+  font-family: 'Arial Black', sans-serif;
+  text-transform: uppercase;
+  z-index: 501; /* Above countdown potentially */
+  pointer-events: none; 
+  opacity: 0.95; 
+  text-align: center;
+}
+
+.race-outcome.win {
+  color: #00ff00; /* Green */
+  /* Reduced Glow */
+  text-shadow: 
+    0 0 5px #0f0, 0 0 10px #0f0, 0 0 15px #0f0, 
+    0 0 25px #0f0, 0 0 40px #0f0; 
+}
+
+.race-outcome.lose {
+  color: #ff0000; /* Red */
+  /* Reduced Glow */
+   text-shadow: 
+    0 0 5px #f00, 0 0 10px #f00, 0 0 15px #f00, 
+    0 0 25px #f00, 0 0 40px #f00; 
 } 

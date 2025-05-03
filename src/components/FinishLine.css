@@ -1,0 +1,20 @@
+.finish-line {
+  position: absolute;
+  bottom: 0; /* Align with road bottom */
+  /* Left position set by inline style */
+  width: 15px; /* Thickness of the line */
+  height: 25%; /* Match approximate road height from Road.css */
+  background-color: #ffffff; /* White line */
+  /* Add checkered pattern? */
+  background-image: 
+      linear-gradient(45deg, #333 25%, transparent 25%), 
+      linear-gradient(-45deg, #333 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, #333 75%),
+      linear-gradient(-45deg, transparent 75%, #333 75%);
+  background-size: 10px 10px; /* Size of the checks */
+  background-position: 0 0, 0 5px, 5px -5px, -5px 0px;
+
+  z-index: 7; /* Above road overlay (6), below cars */
+  pointer-events: none;
+  box-shadow: 0 0 10px 5px rgba(255, 255, 255, 0.5); /* Add a glow */
+} 

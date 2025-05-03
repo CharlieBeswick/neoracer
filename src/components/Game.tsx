@@ -6,6 +6,7 @@ import SunLayer from './SunLayer';
 import Road from './Road';
 import PlayerCar from './PlayerCar';
 import OpponentCar from './OpponentCar';
+import FinishLine from './FinishLine';
 // import LightingOverlay from './LightingOverlay'; // Removed
 import './Game.css';
 
@@ -35,6 +36,7 @@ const BRAKING_RATE = ACCELERATION_RATE * 2;
 const MAX_SPEED = 1200; // Player max speed
 const OPPONENT_MAX_SPEED = 1400; 
 const OPPONENT_ACCELERATION_RATE_SIMPLE = ACCELERATION_RATE * 0.8; // Opponent accelerates 20% slower than player (was 0.9)
+const RACE_DISTANCE_PIXELS = 20000; // Define race length
 
 const Game: React.FC<GameProps> = ({ onBackToMenu }) => {
   // State to manage the player's current scrolling speed
@@ -50,12 +52,15 @@ const Game: React.FC<GameProps> = ({ onBackToMenu }) => {
 
   // Opponent State
   const [opponentCurrentSpeed, setOpponentCurrentSpeed] = useState(BASE_SCROLL_SPEED); 
-  const [targetRelativeDistance, setTargetRelativeDistance] = useState(0); // Target offset based on physics
+  const [targetRelativeDistance, setTargetRelativeDistance] = useState(0); // Target offset based on physics (used for lerping visual offset)
   const [opponentVisualOffsetX, setOpponentVisualOffsetX] = useState(0); // Smoothed visual offset
+  const [opponentScrollPos, setOpponentScrollPos] = useState(0); // Track opponent's absolute scroll position
 
   // Race State
   const [countdown, setCountdown] = useState<number | null>(null); // 3, 2, 1, null
   const [raceStarted, setRaceStarted] = useState(false);
+  type RaceOutcome = 'win' | 'lose' | null;
+  const [raceOutcome, setRaceOutcome] = useState<RaceOutcome>(null); // Track win/loss
 
   // --- Pause Logic ---
   const isPaused = showRotationOverlay; // Pause game if overlay is shown
@@ -68,6 +73,7 @@ const Game: React.FC<GameProps> = ({ onBackToMenu }) => {
   const [raceSoundPlayed, setRaceSoundPlayed] = useState(false); // Track if race sound played in current high-speed phase
   const lastFrameTimeRef = useRef<number | null>(null); // Ref for game loop timing
   const animationFrameIdRef = useRef<number | null>(null); // Ref for animation frame ID
+  const scrollPosRef = useRef<number>(0); // Ref to hold current scrollPos for interval
 
   // --- Toggle Mute Function ---
   const toggleMute = () => {
@@ -93,10 +99,13 @@ const Game: React.FC<GameProps> = ({ onBackToMenu }) => {
         setTargetRelativeDistance(0);
         setOpponentVisualOffsetX(0);
         setScrollPos(0); // Reset background scroll too
+        setOpponentScrollPos(0); // Reset opponent scroll position
+        setRaceOutcome(null); // Reset race outcome
     } else {
         // If turning off, cancel countdown
         setCountdown(null);
         setRaceStarted(false); // Ensure race stops if engine turned off
+        setRaceOutcome(null); // Reset race outcome
     }
   };
 
@@ -237,6 +246,28 @@ const Game: React.FC<GameProps> = ({ onBackToMenu }) => {
       }
   }, [countdown]);
 
+  // --- Distance Logging Timer ---
+  useEffect(() => {
+    // Only set up interval when the engine is on
+    if (!isEngineOn) {
+        return;
+    }
+
+    console.log('Starting distance log interval...'); // Debug log
+    const logInterval = setInterval(() => {
+        // Access current scrollPos via ref
+        const distanceTraveled = Math.abs(scrollPosRef.current);
+        console.log(`Distance Traveled: ${distanceTraveled.toFixed(0)} pixels`);
+    }, 2000); 
+
+    // Cleanup interval on component unmount or when engine turns off
+    return () => {
+        console.log('Clearing distance log interval.'); // Debug log
+        clearInterval(logInterval);
+    };
+
+  }, [isEngineOn]); // Only depend on engine state to setup/cleanup interval
+
   // --- Game Loop for Speed and Scroll Position Update --- 
   useEffect(() => {
     const gameLoop = (timestamp: number) => {
@@ -276,6 +307,11 @@ const Game: React.FC<GameProps> = ({ onBackToMenu }) => {
           setScrollPos(prevPos => prevPos - updatedSpeed * deltaTime); 
         }
 
+        // --- Opponent Scroll Position Update ---
+        if (updatedOpponentSpeed > 0) {
+          setOpponentScrollPos(prevPos => prevPos - updatedOpponentSpeed * deltaTime);
+        }
+
         // --- Opponent Speed Update Logic --- 
         setOpponentCurrentSpeed(prevOpponentSpeed => {
             let newOpponentSpeed = prevOpponentSpeed;
@@ -308,6 +344,26 @@ const Game: React.FC<GameProps> = ({ onBackToMenu }) => {
         // For frame-rate independence: adjustFactor = 1 - Math.exp(-deltaTime * SMOOTHING_CONSTANT)
         // Example: const SMOOTHING = 5; const lerpFactor = 1 - Math.exp(-deltaTime * SMOOTHING);
 
+        // --- Check Race Finish Condition ---
+        if (raceOutcome === null) { // Only check if race hasn't already ended
+            const playerDistance = Math.abs(scrollPos); // Use current state value
+            const opponentDistance = Math.abs(opponentScrollPos); // Use the opponent's absolute scroll position
+
+            if (playerDistance >= RACE_DISTANCE_PIXELS && opponentDistance < RACE_DISTANCE_PIXELS) {
+                console.log("Player Wins!");
+                setRaceOutcome('win');
+                setRaceStarted(false); // Stop further race logic/opponent accel
+                setIsBraking(true); // Apply player brakes
+                setIsAccelerating(false); // Stop player acceleration
+            } else if (opponentDistance >= RACE_DISTANCE_PIXELS && playerDistance < RACE_DISTANCE_PIXELS) {
+                console.log("Opponent Wins!");
+                setRaceOutcome('lose');
+                setRaceStarted(false); // Stop further race logic
+                setIsBraking(true); // Apply player brakes
+                setIsAccelerating(false); // Stop player acceleration
+            }
+        }
+
       }
       animationFrameIdRef.current = requestAnimationFrame(gameLoop);
     };
@@ -325,7 +381,7 @@ const Game: React.FC<GameProps> = ({ onBackToMenu }) => {
   // isAccelerating and isBraking are derived from events, not needed as dependency directly
   // isEngineOn, isPaused trigger state updates which cause re-render anyway,
   // but including them ensures loop logic always has latest state if needed for complex conditions.
-  }, [isEngineOn, isPaused, isAccelerating, isBraking, targetRelativeDistance]); // Add targetRelativeDistance dependency for lerp
+  }, [isEngineOn, isPaused, isAccelerating, isBraking, targetRelativeDistance, scrollPos, raceOutcome]); // Add targetRelativeDistance dependency for lerp
 
   // --- Fullscreen Logic ---
   const checkFullscreenStatus = () => {
@@ -418,6 +474,15 @@ const Game: React.FC<GameProps> = ({ onBackToMenu }) => {
   // Use the SMOOTHED opponentVisualOffsetX for the transform
   const relativeOpponentX = opponentVisualOffsetX;
 
+  // Calculate finish line position relative to viewport
+  // Starts at RACE_DISTANCE + scrollPos (which is negative)
+  const finishLineLeft = RACE_DISTANCE_PIXELS + scrollPos;
+
+  // --- Keep scrollPosRef updated ---
+  useEffect(() => {
+    scrollPosRef.current = scrollPos;
+  }, [scrollPos]);
+
   return (
     <div className="game-container">
       {/* Conditionally render rotation overlay */}
@@ -434,6 +499,14 @@ const Game: React.FC<GameProps> = ({ onBackToMenu }) => {
       {countdown === 0 && (
           <div className="countdown-display go">GO!</div>
       ) }
+
+      {/* Conditionally render race outcome */} 
+      {raceOutcome === 'win' && (
+          <div className="race-outcome win">YOU WIN!</div>
+      )}
+      {raceOutcome === 'lose' && (
+          <div className="race-outcome lose">ENEMY WINS!</div>
+      )}
 
       {/* Layer 0: Background Gradient */}
       <Background bgPositionX={backgroundBgPosition} />
@@ -453,8 +526,10 @@ const Game: React.FC<GameProps> = ({ onBackToMenu }) => {
       {/* Layer 5: Road */}
       <Road bgPositionX={roadBgPosition} />
 
-      {/* Layer 6: Road Overlay */}
-      {/* The ::before pseudo-element is styled in Road.css */}
+      {/* Render finish line if it's potentially visible */} 
+      {finishLineLeft > -50 && finishLineLeft < window.innerWidth + 50 && (
+         <FinishLine leftPosition={finishLineLeft} />
+      )}
 
       {/* Layer 100: Player Car */}
       <PlayerCar currentSpeed={currentSpeed} isEngineOn={isEngineOn} isPaused={isPaused} />
