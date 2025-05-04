@@ -21,7 +21,8 @@
 .menu-title {
   /* Vapourwave Neon Blue Title */
   font-family: 'Arial Black', 'Impact', sans-serif; /* Bold, retro-ish fonts */
-  font-size: 6rem; /* Larger size */
+  /* Use clamp for responsive font size: clamp(MIN, SCALING, MAX) */
+  font-size: clamp(2.5rem, 8vmin, 6rem); 
   font-weight: bold;
   text-transform: uppercase;
   color: #ffffff; /* Base color - white */
@@ -34,7 +35,7 @@
     0 0 70px #00aaff,
     0 0 80px #00aaff,
     0 0 100px #00aaff;
-  margin-bottom: 50px; /* Increased spacing */
+  margin-bottom: 5vh; /* Use vh for vertical spacing */
   letter-spacing: 0.1em; /* Add some letter spacing */
   text-align: center;
 }
@@ -42,23 +43,24 @@
 .menu-options {
   display: flex;
   flex-direction: column;
-  gap: 25px; /* Increased spacing between buttons */
-  margin-top: 20px; /* Add some space below title */
+  gap: 3vh; /* vh for vertical gap */
+  margin-top: 2vh;
 }
 
 .menu-options button {
   /* Match title font */
   font-family: 'Arial Black', 'Impact', sans-serif; 
-  /* Larger Size */
-  padding: 20px 40px; 
-  font-size: 2rem; 
+  /* Responsive padding */
+  padding: clamp(10px, 2vh, 20px) clamp(20px, 4vw, 40px); 
+  /* Responsive font size */
+  font-size: clamp(1rem, 4vmin, 2rem); 
   text-transform: uppercase;
   cursor: pointer;
   /* Transparent Background */
   background-color: transparent;
   /* Neon Blue Glowing Border */
-  border: 3px solid #00aaff;
-  border-radius: 8px;
+  border: clamp(2px, 0.5vmin, 3px) solid #00aaff; /* Scalable border */
+  border-radius: 8px; /* Keep fixed radius or use vmin? */
   box-shadow: 0 0 8px #00aaff, inset 0 0 8px #00aaff;
   /* Neon Blue Glowing Text */
   color: #ffffff; 
@@ -85,9 +87,9 @@
 /* Credits Text Styling */
 .credits-text {
   position: absolute;
-  bottom: 15px; /* Adjust spacing from bottom */
-  right: 15px; /* Adjust spacing from right */
-  font-size: 0.9rem; /* Relatively small font size */
+  bottom: 2vh; /* Position relative to viewport height */
+  right: 3vw; /* Position relative to viewport width */
+  font-size: clamp(0.7rem, 1.5vmin, 0.9rem); 
   font-family: 'Arial', sans-serif; /* Simple font */
   color: #ffffff; /* Base white */
   /* Neon Blue Glow Effect (Subtler than title/buttons) */
@@ -102,34 +104,12 @@
 /* Positioning for Fullscreen button (top-left) */
 .fullscreen-button {
   position: absolute;
-  top: 20px;
-  left: 20px;
+  top: 2vh; /* vh */
+  left: 3vw; /* vw */
+  padding: clamp(8px, 1.5vh, 12px) clamp(10px, 2vw, 18px); 
+  font-size: clamp(0.8rem, 2vmin, 1.1rem); 
   /* Inherits base style from .menu-button */
-  /* Adjust size/padding if needed */
-  padding: 10px 15px; 
-  font-size: 1.1rem; 
+  /* Base button class already includes scalable border */
 }
 
-/* --- Mobile Styles --- */
-@media (max-width: 768px) {
-  .menu-title {
-    font-size: 3.5rem; /* Reduced */
-    margin-bottom: 30px;
-  }
-
-  .menu-options button {
-    padding: 15px 30px; /* Reduced */
-    font-size: 1.5rem; /* Reduced */
-  }
-
-  .fullscreen-button {
-    padding: 8px 12px;
-    font-size: 0.9rem;
-  }
-
-  .credits-text {
-    font-size: 0.7rem;
-    bottom: 10px;
-    right: 10px;
-  }
-} 
+/* Old mobile styles removed */ 

@@ -28,7 +28,11 @@ const Menu: React.FC<MenuProps> = ({
       </div>
 
       {/* Credits Text */}
-      <div className="credits-text">Credits: IVOXYGEN Music</div>
+      <div className="credits-text">
+        Credits: IVOXYGEN Music
+        <br />
+        Game Designed by C.Beswick
+      </div>
     </div>
   );
 };

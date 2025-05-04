@@ -38,27 +38,32 @@
 /* New layout for mode buttons */
 .mode-options {
   display: flex;
-  flex-direction: row; /* Arrange buttons side-by-side */
-  justify-content: center; /* Center buttons horizontally */
-  gap: 50px; /* Increased gap between buttons */
-  margin-top: 20px;
+  flex-direction: row; /* Keep row layout for desktop */
+  justify-content: center; 
+  gap: 5vw; /* Use vw for horizontal gap */
+  margin-top: 3vh;
+  width: 90%; /* Limit overall width */
+  max-width: 1200px; /* Add a max-width for very large screens */
 }
 
 /* Container for each mode option (image + button) */
 .mode-option {
   display: flex;
-  flex-direction: column; /* Stack image above button */
-  align-items: center; /* Center items horizontally */
-  gap: 20px; /* Space between image and button */
+  flex-direction: column; 
+  align-items: center; 
+  gap: 2vh; /* vh for vertical gap */
+  flex: 1; /* Allow options to grow/shrink */
+  min-width: 0; /* Needed for flex shrinking */
 }
 
 /* Style for the mode images */
 .mode-image {
-  width: 400px; /* Was 200px */
+  width: 80%; /* Relative to parent */
+  max-width: 300px; /* Add max width */
   height: auto; 
-  max-height: 300px; /* Was 150px */
+  aspect-ratio: 4 / 3; /* Maintain aspect ratio */
   object-fit: contain; 
-  transition: filter 0.3s ease-out; /* Add transition for smooth glow */
+  transition: filter 0.3s ease-out;
 }
 
 /* Add pointer cursor to the image within an active mode-option */
@@ -69,19 +74,20 @@
 /* Reuse menu button styles */
 .mode-button {
   font-family: 'Arial Black', 'Impact', sans-serif;
-  padding: 25px 50px; /* Slightly larger padding */
-  font-size: 2.5rem; /* Slightly larger font */
+  /* Responsive padding & font */
+  padding: clamp(12px, 2vh, 25px) clamp(25px, 4vw, 50px);
+  font-size: clamp(1.2rem, 4vmin, 2.5rem);
   text-transform: uppercase;
   cursor: pointer;
   background-color: transparent;
-  border: 3px solid #00aaff;
+  border: clamp(2px, 0.5vmin, 3px) solid #00aaff; /* Scalable border */
   border-radius: 8px;
   box-shadow: 0 0 8px #00aaff, inset 0 0 8px #00aaff;
   color: #ffffff;
-  text-shadow: 
-    0 0 3px #0ff, 0 0 6px #0ff,
-    0 0 10px #00aaff;
+  text-shadow: 0 0 3px #0ff, 0 0 6px #0ff, 0 0 10px #00aaff;
   transition: background-color 0.3s, color 0.3s, box-shadow 0.3s, text-shadow 0.3s;
+  width: 80%; /* Make button width relative */
+  max-width: 300px;
 }
 
 /* Apply glow to IMAGE when parent mode-option is hovered (and not disabled) */
@@ -111,40 +117,14 @@
 
 /* Positioning for the Back Button */
 .back-button {
-  position: absolute; /* Position relative to container */
-  top: 20px; /* Adjust spacing from top */
-  left: 20px; /* Adjust spacing from left */
-  padding: 10px 20px; /* Smaller padding than mode buttons */
-  font-size: 1.5rem; /* Smaller font size */
+  position: absolute; 
+  top: 2vh; /* vh */
+  left: 3vw; /* vw */
+  /* Use clamp for responsive padding & font */
+  padding: clamp(8px, 1.5vh, 12px) clamp(15px, 2.5vw, 25px); 
+  font-size: clamp(1rem, 2.5vmin, 1.5rem); 
+  width: auto; /* Override width from .mode-button */
+  max-width: none;
 }
 
-/* --- Mobile Styles --- */
-@media (max-width: 768px) {
-  /* Title inherits from Menu.css, but can override if needed */
-  /* .menu-title { font-size: 3rem; } */
-
-  .mode-options {
-    flex-direction: column; /* Stack vertically */
-    gap: 30px; /* Adjust vertical gap */
-    align-items: center; /* Center stack */
-  }
-
-  .mode-option {
-    gap: 15px; /* Smaller gap between image and button */
-  }
-
-  .mode-image {
-    width: 250px; /* Reduced */
-    max-height: 180px; /* Reduced */
-  }
-
-  .mode-button {
-    padding: 15px 30px; /* Reduced */
-    font-size: 1.8rem; /* Reduced */
-  }
-
-  .back-button {
-    padding: 8px 15px;
-    font-size: 1.1rem;
-  }
-} 
+/* Old mobile styles removed */ 

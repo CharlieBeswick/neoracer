@@ -8,22 +8,25 @@
 
 .game-overlay {
   position: absolute;
-  top: 10px;
-  left: 10px;
+  top: 1.5vh; /* vh */
+  left: 1vw; /* vw */
   z-index: 10; /* Ensure overlay is above background */
   color: white;
   background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
-  padding: 10px;
+  padding: 1vmin; /* vmin */
   border-radius: 5px;
+  font-size: clamp(0.7rem, 2vmin, 1rem); /* clamp */
 }
 
 .game-overlay p {
-  margin-bottom: 10px;
+  margin-bottom: 1vh; /* vh */
 }
 
 .game-overlay button {
-  padding: 5px 10px;
+  padding: clamp(3px, 0.8vmin, 6px) clamp(6px, 1.5vmin, 12px); /* clamp */
+  font-size: clamp(0.6rem, 1.8vmin, 0.9rem); /* clamp */
   cursor: pointer;
+  margin-left: 1vw !important; /* vw */
 }
 
 .rotation-overlay {
@@ -39,7 +42,7 @@
   align-items: center;
   text-align: center;
   z-index: 1000; /* Above everything */
-  font-size: 1.5rem;
+  font-size: clamp(1rem, 4vmin, 1.5rem); /* clamp */
   padding: 20px;
   box-sizing: border-box;
 }
@@ -54,7 +57,7 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 15rem; /* Very large */
+  font-size: clamp(6rem, 25vmin, 15rem); /* clamp */
   font-weight: bold;
   font-family: 'Arial Black', sans-serif;
   color: #ffffff; /* Base white */
@@ -72,14 +75,9 @@
 
 /* Optional: Style for "GO!" text */
 .countdown-display.go {
-  font-size: 12rem; /* Slightly smaller for text? */
+  font-size: clamp(5rem, 20vmin, 12rem); /* clamp */
   color: #00ff00; /* Green */
-   text-shadow: 
-    0 0 10px #0f0, 
-    0 0 20px #0f0, 
-    0 0 40px #0f0, 
-    0 0 70px #0f0, 
-    0 0 100px #0f0; 
+  text-shadow: 0 0 10px #0f0, 0 0 20px #0f0, 0 0 40px #0f0, 0 0 70px #0f0, 0 0 100px #0f0;
 }
 
 /* Race Outcome Display */
@@ -88,7 +86,7 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 10rem; /* Slightly smaller than countdown */
+  font-size: clamp(4rem, 18vmin, 10rem); /* clamp */
   font-weight: bold;
   font-family: 'Arial Black', sans-serif;
   text-transform: uppercase;
@@ -114,38 +112,4 @@
     0 0 25px #f00, 0 0 40px #f00; 
 }
 
-/* --- Mobile Styles --- */
-@media (max-width: 768px) {
-  .game-overlay {
-    top: 5px;
-    left: 5px;
-    padding: 5px;
-    font-size: 0.75rem; /* Smaller text */
-  }
-
-  .game-overlay p {
-    margin-bottom: 5px;
-  }
-
-  .game-overlay button {
-    padding: 3px 6px;
-    font-size: 0.7rem;
-    margin-left: 5px !important; /* Reduce spacing, use important if needed */
-  }
-
-  .countdown-display {
-    font-size: 8rem; /* Reduced */
-  }
-  .countdown-display.go {
-    font-size: 7rem; /* Reduced */
-  }
-
-  .race-outcome {
-    font-size: 5rem; /* Reduced */
-  }
-
-  /* Ensure rotation overlay text is readable */
-  .rotation-overlay {
-    font-size: 1.2rem;
-  }
-} 
+/* Old mobile styles removed */ 
