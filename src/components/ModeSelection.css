@@ -1,0 +1,110 @@
+/* src/components/ModeSelection.css */
+
+/* Reuse container styles from Menu.css for background etc. */
+.mode-selection-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-image: url('/assets/neoncarbackground2.jpg'); 
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: rgba(0, 0, 10, 0.5);
+  background-blend-mode: multiply;
+  padding: 20px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* Reuse menu title styles */
+.menu-title {
+  font-family: 'Arial Black', 'Impact', sans-serif;
+  font-size: 6rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: #ffffff;
+  text-shadow: 
+    0 0 5px #0ff, 0 0 10px #0ff,
+    0 0 20px #0ff, 0 0 40px #00aaff,
+    0 0 70px #00aaff, 0 0 80px #00aaff,
+    0 0 100px #00aaff;
+  margin-bottom: 50px;
+  letter-spacing: 0.1em;
+  text-align: center;
+}
+
+/* New layout for mode buttons */
+.mode-options {
+  display: flex;
+  flex-direction: row; /* Arrange buttons side-by-side */
+  justify-content: center; /* Center buttons horizontally */
+  gap: 50px; /* Increased gap between buttons */
+  margin-top: 20px;
+}
+
+/* Container for each mode option (image + button) */
+.mode-option {
+  display: flex;
+  flex-direction: column; /* Stack image above button */
+  align-items: center; /* Center items horizontally */
+  gap: 20px; /* Space between image and button */
+}
+
+/* Style for the mode images */
+.mode-image {
+  width: 400px; /* Was 200px */
+  height: auto; 
+  max-height: 300px; /* Was 150px */
+  object-fit: contain; 
+  transition: filter 0.3s ease-out; /* Add transition for smooth glow */
+}
+
+/* Add pointer cursor to the image within an active mode-option */
+.mode-option:not(:has(button:disabled)) .mode-image {
+  cursor: pointer;
+}
+
+/* Reuse menu button styles */
+.mode-button {
+  font-family: 'Arial Black', 'Impact', sans-serif;
+  padding: 25px 50px; /* Slightly larger padding */
+  font-size: 2.5rem; /* Slightly larger font */
+  text-transform: uppercase;
+  cursor: pointer;
+  background-color: transparent;
+  border: 3px solid #00aaff;
+  border-radius: 8px;
+  box-shadow: 0 0 8px #00aaff, inset 0 0 8px #00aaff;
+  color: #ffffff;
+  text-shadow: 
+    0 0 3px #0ff, 0 0 6px #0ff,
+    0 0 10px #00aaff;
+  transition: background-color 0.3s, color 0.3s, box-shadow 0.3s, text-shadow 0.3s;
+}
+
+/* Apply glow to IMAGE when parent mode-option is hovered (and not disabled) */
+.mode-option:not(:has(button:disabled)):hover .mode-image {
+  filter: drop-shadow(0 0 8px #0ff) drop-shadow(0 0 15px #00aaff);
+}
+
+/* Apply glow to BUTTON when parent mode-option is hovered (and not disabled) */
+.mode-option:not(:has(button:disabled)):hover .mode-button {
+  background-color: rgba(0, 170, 255, 0.1);
+  color: #ffffff;
+  box-shadow: 0 0 15px #0ff, inset 0 0 12px #0ff;
+  text-shadow: 
+    0 0 5px #0ff, 0 0 10px #0ff,
+    0 0 15px #00aaff, 0 0 20px #00aaff;
+}
+
+/* Style for disabled button */
+.mode-button:disabled {
+  cursor: not-allowed;
+  border-color: #555; /* Dimmer border */
+  color: #777; /* Dimmer text */
+  box-shadow: none; /* Remove glow */
+  text-shadow: none; /* Remove text glow */
+  opacity: 0.6; /* Make it look faded */
+} 
