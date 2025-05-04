@@ -5,7 +5,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: space-around;
   min-height: 100vh;
   background-image: url('/assets/neoncarbackground2.jpg'); 
   background-size: cover;
@@ -18,50 +18,40 @@
   overflow: hidden;
 }
 
-/* Reuse menu title styles */
-.menu-title {
-  font-family: 'Arial Black', 'Impact', sans-serif;
-  font-size: 6rem;
-  font-weight: bold;
-  text-transform: uppercase;
-  color: #ffffff;
-  text-shadow: 
-    0 0 5px #0ff, 0 0 10px #0ff,
-    0 0 20px #0ff, 0 0 40px #00aaff,
-    0 0 70px #00aaff, 0 0 80px #00aaff,
-    0 0 100px #00aaff;
-  margin-bottom: 50px;
-  letter-spacing: 0.1em;
-  text-align: center;
+/* Override menu title for this screen */
+.mode-selection-container .menu-title {
+   font-size: clamp(2rem, 7vmin, 4.5rem);
+   margin-bottom: 3vh;
 }
 
-/* New layout for mode buttons */
+/* Layout for mode buttons */
 .mode-options {
   display: flex;
-  flex-direction: row; /* Keep row layout for desktop */
+  flex-direction: row; 
   justify-content: center; 
-  gap: 5vw; /* Use vw for horizontal gap */
-  margin-top: 3vh;
-  width: 90%; /* Limit overall width */
-  max-width: 1200px; /* Add a max-width for very large screens */
+  gap: 4vw;
+  margin-top: 1vh;
+  width: 90%; 
+  max-width: 1100px;
+  align-items: flex-start;
 }
 
-/* Container for each mode option (image + button) */
+/* Container for each mode option */
 .mode-option {
   display: flex;
   flex-direction: column; 
   align-items: center; 
-  gap: 2vh; /* vh for vertical gap */
-  flex: 1; /* Allow options to grow/shrink */
-  min-width: 0; /* Needed for flex shrinking */
+  gap: 1.5vh;
+  flex: 1; 
+  min-width: 0; 
 }
 
 /* Style for the mode images */
 .mode-image {
-  width: 80%; /* Relative to parent */
-  max-width: 300px; /* Add max width */
+  width: 75%;
+  max-width: 250px;
   height: auto; 
-  aspect-ratio: 4 / 3; /* Maintain aspect ratio */
+  aspect-ratio: 16 / 9;
   object-fit: contain; 
   transition: filter 0.3s ease-out;
 }
@@ -71,23 +61,22 @@
   cursor: pointer;
 }
 
-/* Reuse menu button styles */
+/* Mode button adjustments */
 .mode-button {
   font-family: 'Arial Black', 'Impact', sans-serif;
-  /* Responsive padding & font */
-  padding: clamp(12px, 2vh, 25px) clamp(25px, 4vw, 50px);
-  font-size: clamp(1.2rem, 4vmin, 2.5rem);
+  padding: clamp(10px, 1.8vh, 20px) clamp(20px, 3.5vw, 40px);
+  font-size: clamp(1rem, 3.5vmin, 2rem);
   text-transform: uppercase;
   cursor: pointer;
   background-color: transparent;
-  border: clamp(2px, 0.5vmin, 3px) solid #00aaff; /* Scalable border */
+  border: clamp(2px, 0.5vmin, 3px) solid #00aaff;
   border-radius: 8px;
   box-shadow: 0 0 8px #00aaff, inset 0 0 8px #00aaff;
   color: #ffffff;
   text-shadow: 0 0 3px #0ff, 0 0 6px #0ff, 0 0 10px #00aaff;
   transition: background-color 0.3s, color 0.3s, box-shadow 0.3s, text-shadow 0.3s;
-  width: 80%; /* Make button width relative */
-  max-width: 300px;
+  width: 75%;
+  max-width: 250px;
 }
 
 /* Apply glow to IMAGE when parent mode-option is hovered (and not disabled) */
@@ -108,22 +97,21 @@
 /* Style for disabled button */
 .mode-button:disabled {
   cursor: not-allowed;
-  border-color: #555; /* Dimmer border */
-  color: #777; /* Dimmer text */
-  box-shadow: none; /* Remove glow */
-  text-shadow: none; /* Remove text glow */
-  opacity: 0.6; /* Make it look faded */
+  border-color: #555;
+  color: #777;
+  box-shadow: none;
+  text-shadow: none;
+  opacity: 0.6;
 }
 
-/* Positioning for the Back Button */
+/* Back button adjustments */
 .back-button {
   position: absolute; 
-  top: 2vh; /* vh */
-  left: 3vw; /* vw */
-  /* Use clamp for responsive padding & font */
-  padding: clamp(8px, 1.5vh, 12px) clamp(15px, 2.5vw, 25px); 
-  font-size: clamp(1rem, 2.5vmin, 1.5rem); 
-  width: auto; /* Override width from .mode-button */
+  top: 2vh; 
+  left: 3vw; 
+  padding: clamp(8px, 1.2vh, 10px) clamp(12px, 2vw, 20px);
+  font-size: clamp(0.8rem, 2vmin, 1.3rem);
+  width: auto; 
   max-width: none;
 }
 
