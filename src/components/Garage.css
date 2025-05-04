@@ -25,7 +25,7 @@
   top: 3vh; /* vh */
   left: 50%;
   transform: translateX(-50%);
-  font-family: 'Arial Black', 'Impact', sans-serif;
+  font-family: 'Texturina', serif;
   font-size: clamp(2.5rem, 7vmin, 5rem); /* clamp */
   font-weight: bold;
   text-transform: uppercase;
@@ -42,7 +42,7 @@
   left: 50%;
   transform: translateX(-50%);
   width: 80%;
-  font-family: 'Arial Black', 'Impact', sans-serif;
+  font-family: 'Texturina', serif;
   font-size: clamp(1rem, 3vmin, 1.8rem); /* clamp */
   color: #ffffff;
   text-shadow: 0 0 3px #0ff, 0 0 6px #0ff, 0 0 15px #00aaff;
@@ -51,7 +51,7 @@
 
 /* Reuse menu button style, give it a shared class */
 .garage-button {
-  font-family: 'Arial Black', 'Impact', sans-serif; 
+  font-family: 'Texturina', serif;
   padding: clamp(10px, 2vh, 18px) clamp(20px, 3.5vw, 35px); 
   font-size: clamp(1rem, 3.5vmin, 1.8rem); 
   text-transform: uppercase;

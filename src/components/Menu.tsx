@@ -6,24 +6,42 @@ interface MenuProps {
   onQuit: () => void;
   isFullscreen: boolean;
   toggleFullscreen: () => void;
+  onGoToDevLog: () => void;
+  isMuted: boolean;
+  toggleMute: () => void;
 }
 
 const Menu: React.FC<MenuProps> = ({ 
   onPlay, 
   onQuit,
   isFullscreen,
-  toggleFullscreen
+  toggleFullscreen,
+  onGoToDevLog,
+  isMuted,
+  toggleMute
 }) => {
   return (
     <div className="menu-container">
-      {/* Fullscreen Button - Top Left */}
-      <button onClick={toggleFullscreen} className="menu-button fullscreen-button">
-        {isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
-      </button>
+      {/* Container for top-left controls */}
+      <div className="menu-top-left-controls">
+        <button 
+          onClick={toggleFullscreen} 
+          className="menu-button menu-control-button"
+        >
+          {isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
+        </button>
+        <button 
+          onClick={toggleMute} 
+          className="menu-button menu-control-button"
+        >
+          {isMuted ? 'Unmute' : 'Mute'}
+        </button>
+      </div>
 
       <h1 className="menu-title">NEORACER</h1>
       <div className="menu-options">
         <button onClick={onPlay}>Play</button>
+        <button onClick={onGoToDevLog}>Dev Log</button>
         <button onClick={onQuit}>Quit</button>
       </div>
 

@@ -20,7 +20,7 @@
 
 .menu-title {
   /* Vapourwave Neon Blue Title */
-  font-family: 'Arial Black', 'Impact', sans-serif; /* Bold, retro-ish fonts */
+  font-family: 'Texturina', serif; /* Changed font */
   /* Use clamp for responsive font size: clamp(MIN, SCALING, MAX) */
   font-size: clamp(2.5rem, 8vmin, 6rem); 
   font-weight: bold;
@@ -49,7 +49,7 @@
 
 .menu-options button {
   /* Match title font */
-  font-family: 'Arial Black', 'Impact', sans-serif; 
+  font-family: 'Texturina', serif; /* Changed font */
   /* Responsive padding */
   padding: clamp(10px, 2vh, 20px) clamp(20px, 4vw, 40px); 
   /* Responsive font size */
@@ -89,8 +89,8 @@
   position: absolute;
   bottom: 2vh; /* Position relative to viewport height */
   right: 3vw; /* Position relative to viewport width */
+  font-family: 'Texturina', serif; /* Changed font */
   font-size: clamp(0.7rem, 1.5vmin, 0.9rem); 
-  font-family: 'Arial', sans-serif; /* Simple font */
   color: #ffffff; /* Base white */
   /* Neon Blue Glow Effect (Subtler than title/buttons) */
   text-shadow: 
@@ -101,15 +101,36 @@
   pointer-events: none; /* Prevent interaction */
 }
 
-/* Positioning for Fullscreen button (top-left) */
-.fullscreen-button {
+/* Container for top-left controls */
+.menu-top-left-controls {
   position: absolute;
-  top: 2vh; /* vh */
-  left: 3vw; /* vw */
-  padding: clamp(8px, 1.5vh, 12px) clamp(10px, 2vw, 18px); 
-  font-size: clamp(0.8rem, 2vmin, 1.1rem); 
-  /* Inherits base style from .menu-button */
-  /* Base button class already includes scalable border */
+  top: 2vh;
+  left: 2vw; /* Adjusted position slightly */
+  display: flex; /* Arrange buttons horizontally */
+  gap: 1.5vw; /* Gap between buttons */
+  z-index: 20; /* Ensure they are clickable */
+}
+
+/* Styling for individual control buttons (Fullscreen, Mute) */
+.menu-control-button {
+  /* Inherits base .menu-button styles */
+  padding: clamp(6px, 1.2vh, 10px) clamp(8px, 1.8vw, 15px); /* Smaller padding */
+  font-size: clamp(0.7rem, 1.8vmin, 1rem); /* Smaller font */
+  /* Apply neon styles */
+  font-family: 'Texturina', serif; 
+  text-transform: uppercase;
+  background-color: transparent;
+  border: clamp(2px, 0.4vmin, 2px) solid #00aaff; /* Slightly thinner border */
+  border-radius: 6px; /* Slightly smaller radius */
+  box-shadow: 0 0 6px #00aaff, inset 0 0 6px #00aaff;
+  color: #ffffff; 
+  text-shadow: 0 0 2px #0ff, 0 0 4px #0ff, 0 0 8px #00aaff;
+  transition: background-color 0.3s, color 0.3s, box-shadow 0.3s, text-shadow 0.3s;
+}
+
+.menu-control-button:hover {
+  /* Inherited hover from .menu-button:hover is likely fine */
+  /* Can enhance further if needed */
 }
 
 /* Old mobile styles removed */ 

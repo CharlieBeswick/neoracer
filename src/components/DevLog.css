@@ -1,0 +1,118 @@
+/* src/components/DevLog.css */
+
+.devlog-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  /* Reuse menu background */
+  background-image: url('/assets/neoncarbackground2.jpg'); 
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: rgba(0, 0, 10, 0.6); /* Slightly darker overlay for readability */
+  background-blend-mode: multiply; 
+  padding: 20px;
+  box-sizing: border-box;
+  overflow-y: auto; /* Allow vertical scrolling for entries */
+  position: relative; /* For absolute positioning of children */
+}
+
+.devlog-title {
+  /* Same font as menu, but positioned top */
+  font-family: 'Texturina', serif;
+  font-size: clamp(2rem, 6vmin, 4rem); /* Responsive */
+  font-weight: bold;
+  text-transform: uppercase;
+  color: #ffffff;
+  text-shadow: 0 0 5px #0ff, 0 0 10px #0ff, 0 0 20px #0ff, 0 0 40px #00aaff, 0 0 70px #00aaff;
+  text-align: center;
+  width: 100%;
+  padding-top: 2vh; /* Space from top */
+  margin-bottom: 3vh; /* Space below title */
+  /* Removed absolute positioning - let it flow */
+}
+
+/* Back button uses .menu-button and .menu-top-left-button from Menu.css */
+
+.devlog-entries-container {
+  width: 90%;
+  max-width: 900px; /* Max width for readability */
+  margin: 0 auto; /* Center container */
+  padding-bottom: 5vh; /* Space at the bottom */
+}
+
+.devlog-entry {
+  background-color: rgba(10, 20, 40, 0.7); /* Dark semi-transparent background */
+  border: 2px solid rgba(0, 170, 255, 0.5); /* Subtle neon blue border */
+  border-radius: 8px;
+  margin-bottom: 3vh;
+  padding: clamp(15px, 2vmin, 25px);
+  box-shadow: 0 0 10px rgba(0, 170, 255, 0.2);
+}
+
+.devlog-entry-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  border-bottom: 1px solid rgba(0, 170, 255, 0.3);
+  padding-bottom: 1.5vmin;
+  margin-bottom: 1.5vmin;
+}
+
+.devlog-entry-header h2 {
+  font-family: 'Texturina', serif;
+  font-size: clamp(1.2rem, 3.5vmin, 1.8rem);
+  color: #eee;
+  text-shadow: 0 0 3px #0ff;
+  margin: 0;
+}
+
+.devlog-entry-header span {
+  font-family: 'Texturina', serif;
+  font-size: clamp(0.8rem, 2vmin, 1rem);
+  color: #aaa;
+  white-space: nowrap; /* Prevent wrapping */
+  margin-left: 15px;
+}
+
+.devlog-entry-content {
+  font-family: 'Texturina', serif;
+  font-size: clamp(0.9rem, 2.2vmin, 1.1rem);
+  color: #ccc;
+  line-height: 1.6;
+}
+
+.devlog-entry-content p {
+  margin-bottom: 1.5vmin;
+}
+
+.devlog-entry-content ul {
+  list-style: disc;
+  margin-left: 25px;
+  margin-bottom: 1.5vmin;
+}
+
+.devlog-entry-content ul ul {
+  list-style: circle;
+  margin-top: 0.5vmin;
+  margin-bottom: 0.5vmin;
+}
+
+.devlog-entry-content li {
+  margin-bottom: 0.8vmin;
+}
+
+.devlog-entry-content strong {
+  color: #eee;
+  font-weight: bold;
+}
+
+/* Style for images within log entries */
+.devlog-entry-image {
+  display: block; /* Ensure it takes block layout */
+  max-width: 100%; /* Prevent overflow */
+  height: auto; /* Maintain aspect ratio */
+  margin: 2vmin auto 0; /* Center image with some top margin */
+  border-radius: 4px; /* Optional: slightly rounded corners */
+} 

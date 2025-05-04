@@ -3,16 +3,18 @@ import Menu from './components/Menu';
 import Game from './components/Game'; // Import the Game component
 import ModeSelection from './components/ModeSelection'; // Import the new component
 import Garage from './components/Garage'; // Import the Garage component
+import DevLog from './components/DevLog'; // Import the DevLog component
 
 const MENU_MUSIC_SRC = '/assets/IVOXYGEN_-_plateau_angst_Techno_Remix_Extended (1).mp3'; // Updated music path
 
 // Define possible game states
-type GameState = 'menu' | 'modeSelection' | 'garage' | 'playing' | 'gameover'; // Added garage
+type GameState = 'menu' | 'modeSelection' | 'garage' | 'playing' | 'devlog' | 'gameover'; // Added devlog
 
 function App() {
   const [gameState, setGameState] = useState<GameState>('menu');
   const menuAudioRef = useRef<HTMLAudioElement | null>(null); // Ref for menu music
   const [isFullscreen, setIsFullscreen] = useState(false); // Moved from Game.tsx
+  const [isMuted, setIsMuted] = useState(false); // Add mute state here
 
   // --- Fullscreen Logic (Moved from Game.tsx) ---
   const checkFullscreenStatus = useCallback(() => {
@@ -36,6 +38,22 @@ function App() {
   };
   // --- End Fullscreen Logic ---
 
+  // --- Mute Logic ---
+  const toggleMute = () => {
+    setIsMuted(prevMuted => !prevMuted);
+    // We also need to apply mute to the audio element directly
+    if (menuAudioRef.current) {
+      menuAudioRef.current.muted = !isMuted;
+    }
+  };
+  // Apply mute state when it changes or audio loads
+  useEffect(() => {
+    if (menuAudioRef.current) {
+      menuAudioRef.current.muted = isMuted;
+    }
+  }, [isMuted, menuAudioRef.current]); // Re-run if isMuted changes or audio loads
+  // --- End Mute Logic ---
+
   // Initialize and cleanup menu audio
   useEffect(() => {
     console.log('Creating menu audio element');
@@ -55,8 +73,8 @@ function App() {
     const audio = menuAudioRef.current;
     if (!audio) return; // Exit if audio element not ready
 
-    // Play if we are on a menu or garage screen
-    if (gameState === 'menu' || gameState === 'modeSelection' || gameState === 'garage') { 
+    // Play if we are on a menu, garage, or devlog screen
+    if (gameState === 'menu' || gameState === 'modeSelection' || gameState === 'garage' || gameState === 'devlog') { 
       if (audio.paused) {
         audio.play().catch(e => console.warn("Menu audio play failed:", e));
       }
@@ -92,36 +110,59 @@ function App() {
     setGameState('menu'); // Example: return to menu
   };
 
+  // Function to navigate to Dev Log
+  const goToDevLog = () => {
+    console.log("Going to Dev Log...");
+    setGameState('devlog');
+  };
+
+  // Function to navigate back to the main menu (can be reused)
+  const goToMenu = () => {
+    console.log("Returning to Menu...");
+    setGameState('menu'); 
+  };
+
   const renderGameState = () => {
     switch (gameState) {
       case 'menu':
-        // Pass fullscreen props to Menu
+        // Pass fullscreen & mute props to Menu
         return <Menu 
                  onPlay={startGame} 
                  onQuit={quitGame} 
                  isFullscreen={isFullscreen} 
                  toggleFullscreen={toggleFullscreen} 
+                 onGoToDevLog={goToDevLog}
+                 isMuted={isMuted} // Pass mute state
+                 toggleMute={toggleMute} // Pass mute function
                />;
       case 'modeSelection':
-        return <ModeSelection onStartSinglePlayer={goToGarage} onBackToMenu={quitGame} />;
+        return <ModeSelection onStartSinglePlayer={goToGarage} onBackToMenu={goToMenu} />;
       case 'garage':
-        return <Garage onStartRace={startRace} onBackToMenu={quitGame} />;
+        return <Garage onStartRace={startRace} onBackToMenu={goToMenu} />;
       case 'playing':
-        // Pass fullscreen props to Game
+        // Pass fullscreen & mute props to Game
         return <Game 
-                 onBackToMenu={() => setGameState('menu')} 
+                 onBackToMenu={goToMenu}
                  isFullscreen={isFullscreen} 
                  toggleFullscreen={toggleFullscreen} 
+                 isMuted={isMuted} // Pass mute state
+                 toggleMute={toggleMute} // Pass mute function
                />;
+      case 'devlog':
+        // Pass mute props to DevLog? Only if it needs controls
+        return <DevLog onBackToMenu={goToMenu} />;
       // case 'gameover':
-      //   return <GameOver onRestart={startGame} onMenu={() => setGameState('menu')} />;
+      //   return <GameOver onRestart={startGame} onMenu={goToMenu} />;
       default:
-        // Pass fullscreen props to default Menu as well
+        // Pass fullscreen & mute props to default Menu as well
         return <Menu 
                  onPlay={startGame} 
                  onQuit={quitGame} 
                  isFullscreen={isFullscreen} 
                  toggleFullscreen={toggleFullscreen} 
+                 onGoToDevLog={goToDevLog}
+                 isMuted={isMuted} // Pass mute state
+                 toggleMute={toggleMute} // Pass mute function
                />; // Default to menu
     }
   };

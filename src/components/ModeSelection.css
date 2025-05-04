@@ -5,7 +5,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-around;
+  justify-content: center;
   min-height: 100vh;
   background-image: url('/assets/neoncarbackground2.jpg'); 
   background-size: cover;
@@ -16,12 +16,14 @@
   padding: 20px;
   box-sizing: border-box;
   overflow: hidden;
+  position: relative;
 }
 
 /* Override menu title for this screen */
 .mode-selection-container .menu-title {
-   font-size: clamp(2rem, 7vmin, 4.5rem);
-   margin-bottom: 3vh;
+   font-family: 'Texturina', serif;
+   font-size: clamp(2.5rem, 7vmin, 5rem);
+   margin-bottom: 5vh;
 }
 
 /* Layout for mode buttons */
@@ -29,11 +31,11 @@
   display: flex;
   flex-direction: row; 
   justify-content: center; 
-  gap: 4vw;
-  margin-top: 1vh;
-  width: 90%; 
-  max-width: 1100px;
-  align-items: flex-start;
+  gap: 8vw;
+  margin-top: 5vh;
+  width: 80%; 
+  max-width: 900px;
+  align-items: center;
 }
 
 /* Container for each mode option */
@@ -41,19 +43,20 @@
   display: flex;
   flex-direction: column; 
   align-items: center; 
-  gap: 1.5vh;
+  gap: 2vh;
   flex: 1; 
   min-width: 0; 
 }
 
 /* Style for the mode images */
 .mode-image {
-  width: 75%;
-  max-width: 250px;
+  width: clamp(80px, 20vmin, 150px);
+  max-width: 100%;
   height: auto; 
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 1 / 1;
   object-fit: contain; 
   transition: filter 0.3s ease-out;
+  margin-bottom: 1vh;
 }
 
 /* Add pointer cursor to the image within an active mode-option */
@@ -63,9 +66,9 @@
 
 /* Mode button adjustments */
 .mode-button {
-  font-family: 'Arial Black', 'Impact', sans-serif;
-  padding: clamp(10px, 1.8vh, 20px) clamp(20px, 3.5vw, 40px);
-  font-size: clamp(1rem, 3.5vmin, 2rem);
+  font-family: 'Texturina', serif;
+  padding: clamp(10px, 1.5vh, 18px) clamp(15px, 3vw, 35px);
+  font-size: clamp(1rem, 3vmin, 1.8rem);
   text-transform: uppercase;
   cursor: pointer;
   background-color: transparent;
@@ -75,8 +78,14 @@
   color: #ffffff;
   text-shadow: 0 0 3px #0ff, 0 0 6px #0ff, 0 0 10px #00aaff;
   transition: background-color 0.3s, color 0.3s, box-shadow 0.3s, text-shadow 0.3s;
-  width: 75%;
-  max-width: 250px;
+  width: clamp(150px, 30vw, 250px);
+  max-width: 100%;
+
+  /* Add flexbox for text centering */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center; /* Ensure text alignment is center */
 }
 
 /* Apply glow to IMAGE when parent mode-option is hovered (and not disabled) */
@@ -102,6 +111,7 @@
   box-shadow: none;
   text-shadow: none;
   opacity: 0.6;
+  background-color: rgba(50, 50, 50, 0.3);
 }
 
 /* Back button adjustments */

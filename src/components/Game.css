@@ -15,6 +15,7 @@
   background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
   padding: 1vmin; /* vmin */
   border-radius: 5px;
+  font-family: 'Texturina', serif; /* Changed font */
   font-size: clamp(0.7rem, 2vmin, 1rem); /* clamp */
 }
 
@@ -42,6 +43,7 @@
   align-items: center;
   text-align: center;
   z-index: 1000; /* Above everything */
+  font-family: 'Texturina', serif; /* Changed font */
   font-size: clamp(1rem, 4vmin, 1.5rem); /* clamp */
   padding: 20px;
   box-sizing: border-box;
@@ -57,9 +59,9 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  font-family: 'Texturina', serif; /* Changed font */
   font-size: clamp(6rem, 25vmin, 15rem); /* clamp */
   font-weight: bold;
-  font-family: 'Arial Black', sans-serif;
   color: #ffffff; /* Base white */
   /* Neon Blue Glow */
   text-shadow: 
@@ -86,9 +88,9 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  font-family: 'Texturina', serif; /* Changed font */
   font-size: clamp(4rem, 18vmin, 10rem); /* clamp */
   font-weight: bold;
-  font-family: 'Arial Black', sans-serif;
   text-transform: uppercase;
   z-index: 501; /* Above countdown potentially */
   pointer-events: none; 

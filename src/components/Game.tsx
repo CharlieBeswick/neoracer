@@ -18,6 +18,8 @@ interface GameProps {
   onBackToMenu: () => void; // Function to go back to the menu
   isFullscreen: boolean;
   toggleFullscreen: () => void;
+  isMuted: boolean; // Add prop
+  toggleMute: () => void; // Add prop
 }
 
 // Constants for parallax effect
@@ -43,13 +45,14 @@ const RACE_DISTANCE_PIXELS = 20000; // Define race length
 const Game: React.FC<GameProps> = ({ 
   onBackToMenu,
   isFullscreen,
-  toggleFullscreen 
+  toggleFullscreen,
+  isMuted, // Destructure prop
+  toggleMute // Destructure prop
 }) => {
   // State to manage the player's current scrolling speed
   const [currentSpeed, setCurrentSpeed] = useState(BASE_SCROLL_SPEED);
   const [isLandscape, setIsLandscape] = useState(true); // Assume landscape initially
   const [showRotationOverlay, setShowRotationOverlay] = useState(false);
-  const [isMuted, setIsMuted] = useState(false); // Mute state
   const [isEngineOn, setIsEngineOn] = useState(false); // Engine state, starts OFF
   const [isAccelerating, setIsAccelerating] = useState(false); // State for acceleration button press
   const [isBraking, setIsBraking] = useState(false); // State for braking button press
@@ -79,11 +82,6 @@ const Game: React.FC<GameProps> = ({
   const lastFrameTimeRef = useRef<number | null>(null); // Ref for game loop timing
   const animationFrameIdRef = useRef<number | null>(null); // Ref for animation frame ID
   const scrollPosRef = useRef<number>(0); // Ref to hold current scrollPos for interval
-
-  // --- Toggle Mute Function ---
-  const toggleMute = () => {
-    setIsMuted(prevMuted => !prevMuted);
-  };
 
   // --- Toggle Engine Function ---
   const toggleEngine = () => {
@@ -151,12 +149,17 @@ const Game: React.FC<GameProps> = ({
     }
 
     // --- Handle Paused/Muted/AudioNotReady State ---
-    if (isMuted || isPaused || !idleAudio1 || !idleAudio2 || !raceAudio) {
+    if (isPaused || !idleAudio1 || !idleAudio2 || !raceAudio) {
       idleAudio1?.pause();
       idleAudio2?.pause();
       raceAudio?.pause();
       return; // Stop further processing
     }
+
+    // Apply App.tsx mute state (needed if sounds are managed here)
+    if(idleAudio1) idleAudio1.muted = isMuted;
+    if(idleAudio2) idleAudio2.muted = isMuted;
+    if(raceAudio) raceAudio.muted = isMuted;
 
     // --- Handle Engine OFF State ---
     if (!isEngineOn) {
@@ -190,7 +193,7 @@ const Game: React.FC<GameProps> = ({
           if (idleAudio2.currentTime === 0) {
              // Schedule it for the first time
              idleStartTimeoutRef.current = setTimeout(() => {
-               if (isEngineOn && !isPaused && !isMuted && currentSpeed < 110) { // Re-check state
+               if (isEngineOn && !isPaused && currentSpeed < 110) { // Re-check state
                    idleAudio2.play().catch(e => console.warn("Idle audio 2 play failed:", e));
                }
                idleStartTimeoutRef.current = null;
@@ -226,7 +229,7 @@ const Game: React.FC<GameProps> = ({
     }
 
     // Add all relevant dependencies
-  }, [currentSpeed, isPaused, isMuted, isEngineOn, raceSoundPlayed]);
+  }, [currentSpeed, isPaused, isEngineOn, raceSoundPlayed, isMuted]);
 
   // --- Countdown Timer Logic ---
   useEffect(() => {

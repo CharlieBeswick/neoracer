@@ -7,14 +7,13 @@
 }
 
 body {
-  font-family: sans-serif;
+  font-family: 'Texturina', serif; /* Changed Google Font */
   /* Remove potential body margin/padding */
   margin: 0;
   padding: 0;
   /* Ensure body takes full viewport height */
   min-height: 100vh;
-  /* Prevent scrollbars unless needed */
-  overflow: hidden; 
+  /* overflow: hidden; /* REMOVED - Allows page scrolling */
 }
 
 #root,
