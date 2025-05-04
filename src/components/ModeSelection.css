@@ -116,4 +116,35 @@
   left: 20px; /* Adjust spacing from left */
   padding: 10px 20px; /* Smaller padding than mode buttons */
   font-size: 1.5rem; /* Smaller font size */
+}
+
+/* --- Mobile Styles --- */
+@media (max-width: 768px) {
+  /* Title inherits from Menu.css, but can override if needed */
+  /* .menu-title { font-size: 3rem; } */
+
+  .mode-options {
+    flex-direction: column; /* Stack vertically */
+    gap: 30px; /* Adjust vertical gap */
+    align-items: center; /* Center stack */
+  }
+
+  .mode-option {
+    gap: 15px; /* Smaller gap between image and button */
+  }
+
+  .mode-image {
+    width: 250px; /* Reduced */
+    max-height: 180px; /* Reduced */
+  }
+
+  .mode-button {
+    padding: 15px 30px; /* Reduced */
+    font-size: 1.8rem; /* Reduced */
+  }
+
+  .back-button {
+    padding: 8px 15px;
+    font-size: 1.1rem;
+  }
 } 

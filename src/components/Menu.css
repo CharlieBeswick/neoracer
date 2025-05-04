@@ -97,4 +97,39 @@
     0 0 8px #00aaff;
   opacity: 0.8; /* Slightly faded */
   pointer-events: none; /* Prevent interaction */
+}
+
+/* Positioning for Fullscreen button (top-left) */
+.fullscreen-button {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  /* Inherits base style from .menu-button */
+  /* Adjust size/padding if needed */
+  padding: 10px 15px; 
+  font-size: 1.1rem; 
+}
+
+/* --- Mobile Styles --- */
+@media (max-width: 768px) {
+  .menu-title {
+    font-size: 3.5rem; /* Reduced */
+    margin-bottom: 30px;
+  }
+
+  .menu-options button {
+    padding: 15px 30px; /* Reduced */
+    font-size: 1.5rem; /* Reduced */
+  }
+
+  .fullscreen-button {
+    padding: 8px 12px;
+    font-size: 0.9rem;
+  }
+
+  .credits-text {
+    font-size: 0.7rem;
+    bottom: 10px;
+    right: 10px;
+  }
 } 

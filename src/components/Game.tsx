@@ -16,6 +16,8 @@ const RACE_SOUND_SRC = '/assets/racesound - 1746226597946.mp3';
 
 interface GameProps {
   onBackToMenu: () => void; // Function to go back to the menu
+  isFullscreen: boolean;
+  toggleFullscreen: () => void;
 }
 
 // Constants for parallax effect
@@ -38,10 +40,13 @@ const OPPONENT_MAX_SPEED = 1400;
 const OPPONENT_ACCELERATION_RATE_SIMPLE = ACCELERATION_RATE * 0.8; // Opponent accelerates 20% slower than player (was 0.9)
 const RACE_DISTANCE_PIXELS = 20000; // Define race length
 
-const Game: React.FC<GameProps> = ({ onBackToMenu }) => {
+const Game: React.FC<GameProps> = ({ 
+  onBackToMenu,
+  isFullscreen,
+  toggleFullscreen 
+}) => {
   // State to manage the player's current scrolling speed
   const [currentSpeed, setCurrentSpeed] = useState(BASE_SCROLL_SPEED);
-  const [isFullscreen, setIsFullscreen] = useState(false);
   const [isLandscape, setIsLandscape] = useState(true); // Assume landscape initially
   const [showRotationOverlay, setShowRotationOverlay] = useState(false);
   const [isMuted, setIsMuted] = useState(false); // Mute state
@@ -382,26 +387,6 @@ const Game: React.FC<GameProps> = ({ onBackToMenu }) => {
   // isEngineOn, isPaused trigger state updates which cause re-render anyway,
   // but including them ensures loop logic always has latest state if needed for complex conditions.
   }, [isEngineOn, isPaused, isAccelerating, isBraking, targetRelativeDistance, scrollPos, raceOutcome]); // Add targetRelativeDistance dependency for lerp
-
-  // --- Fullscreen Logic ---
-  const checkFullscreenStatus = () => {
-    setIsFullscreen(!!document.fullscreenElement);
-  };
-
-  useEffect(() => {
-    document.addEventListener('fullscreenchange', checkFullscreenStatus);
-    return () => document.removeEventListener('fullscreenchange', checkFullscreenStatus);
-  }, []);
-
-  const toggleFullscreen = () => {
-    if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen().catch(err => {
-        console.error(`Error attempting to enable fullscreen: ${err.message} (${err.name})`);
-      });
-    } else {
-      document.exitFullscreen();
-    }
-  };
 
   // --- Orientation Logic ---
   const checkOrientation = useCallback(() => {

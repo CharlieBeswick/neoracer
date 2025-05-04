@@ -112,4 +112,40 @@
    text-shadow: 
     0 0 5px #f00, 0 0 10px #f00, 0 0 15px #f00, 
     0 0 25px #f00, 0 0 40px #f00; 
+}
+
+/* --- Mobile Styles --- */
+@media (max-width: 768px) {
+  .game-overlay {
+    top: 5px;
+    left: 5px;
+    padding: 5px;
+    font-size: 0.75rem; /* Smaller text */
+  }
+
+  .game-overlay p {
+    margin-bottom: 5px;
+  }
+
+  .game-overlay button {
+    padding: 3px 6px;
+    font-size: 0.7rem;
+    margin-left: 5px !important; /* Reduce spacing, use important if needed */
+  }
+
+  .countdown-display {
+    font-size: 8rem; /* Reduced */
+  }
+  .countdown-display.go {
+    font-size: 7rem; /* Reduced */
+  }
+
+  .race-outcome {
+    font-size: 5rem; /* Reduced */
+  }
+
+  /* Ensure rotation overlay text is readable */
+  .rotation-overlay {
+    font-size: 1.2rem;
+  }
 } 

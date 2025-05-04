@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Menu from './components/Menu';
 import Game from './components/Game'; // Import the Game component
 import ModeSelection from './components/ModeSelection'; // Import the new component
@@ -12,6 +12,29 @@ type GameState = 'menu' | 'modeSelection' | 'garage' | 'playing' | 'gameover'; /
 function App() {
   const [gameState, setGameState] = useState<GameState>('menu');
   const menuAudioRef = useRef<HTMLAudioElement | null>(null); // Ref for menu music
+  const [isFullscreen, setIsFullscreen] = useState(false); // Moved from Game.tsx
+
+  // --- Fullscreen Logic (Moved from Game.tsx) ---
+  const checkFullscreenStatus = useCallback(() => {
+    setIsFullscreen(!!document.fullscreenElement);
+  }, []);
+
+  useEffect(() => {
+    document.addEventListener('fullscreenchange', checkFullscreenStatus);
+    checkFullscreenStatus(); // Initial check
+    return () => document.removeEventListener('fullscreenchange', checkFullscreenStatus);
+  }, [checkFullscreenStatus]);
+
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(err => {
+        console.error(`Error attempting to enable fullscreen: ${err.message} (${err.name})`);
+      });
+    } else {
+      document.exitFullscreen();
+    }
+  };
+  // --- End Fullscreen Logic ---
 
   // Initialize and cleanup menu audio
   useEffect(() => {
@@ -72,18 +95,34 @@ function App() {
   const renderGameState = () => {
     switch (gameState) {
       case 'menu':
-        return <Menu onPlay={startGame} onQuit={quitGame} />;
+        // Pass fullscreen props to Menu
+        return <Menu 
+                 onPlay={startGame} 
+                 onQuit={quitGame} 
+                 isFullscreen={isFullscreen} 
+                 toggleFullscreen={toggleFullscreen} 
+               />;
       case 'modeSelection':
         return <ModeSelection onStartSinglePlayer={goToGarage} onBackToMenu={quitGame} />;
       case 'garage':
         return <Garage onStartRace={startRace} onBackToMenu={quitGame} />;
       case 'playing':
-        // Render the actual Game component
-        return <Game onBackToMenu={() => setGameState('menu')} />;
+        // Pass fullscreen props to Game
+        return <Game 
+                 onBackToMenu={() => setGameState('menu')} 
+                 isFullscreen={isFullscreen} 
+                 toggleFullscreen={toggleFullscreen} 
+               />;
       // case 'gameover':
       //   return <GameOver onRestart={startGame} onMenu={() => setGameState('menu')} />;
       default:
-        return <Menu onPlay={startGame} onQuit={quitGame} />; // Default to menu
+        // Pass fullscreen props to default Menu as well
+        return <Menu 
+                 onPlay={startGame} 
+                 onQuit={quitGame} 
+                 isFullscreen={isFullscreen} 
+                 toggleFullscreen={toggleFullscreen} 
+               />; // Default to menu
     }
   };
 
