@@ -14,6 +14,9 @@ const Menu: React.FC<MenuProps> = ({ onPlay, onQuit }) => {
         <button onClick={onPlay}>Play</button>
         <button onClick={onQuit}>Quit</button>
       </div>
+
+      {/* Credits Text */}
+      <div className="credits-text">prod. by C.Beswick</div>
     </div>
   );
 };

@@ -80,4 +80,21 @@
     0 0 10px #0ff,
     0 0 15px #00aaff,
     0 0 20px #00aaff;
+}
+
+/* Credits Text Styling */
+.credits-text {
+  position: absolute;
+  bottom: 15px; /* Adjust spacing from bottom */
+  right: 15px; /* Adjust spacing from right */
+  font-size: 0.9rem; /* Relatively small font size */
+  font-family: 'Arial', sans-serif; /* Simple font */
+  color: #ffffff; /* Base white */
+  /* Neon Blue Glow Effect (Subtler than title/buttons) */
+  text-shadow: 
+    0 0 2px #0ff, 
+    0 0 4px #0ff,
+    0 0 8px #00aaff;
+  opacity: 0.8; /* Slightly faded */
+  pointer-events: none; /* Prevent interaction */
 } 

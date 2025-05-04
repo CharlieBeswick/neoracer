@@ -1,0 +1,167 @@
+/* src/components/Garage.css */
+
+.garage-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; /* Center content vertically */
+  min-height: 100vh;
+  /* Garage background */
+  background-image: url('/assets/spgarage.png'); /* CORRECTED: Path to your garage image */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: rgba(0, 0, 10, 0.3); /* Slight dark overlay */
+  background-blend-mode: multiply; 
+  padding: 20px;
+  box-sizing: border-box;
+  overflow: hidden; 
+  position: relative; /* Needed for absolute positioning of buttons */
+}
+
+/* Reuse menu title style */
+.garage-title {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Arial Black', 'Impact', sans-serif;
+  font-size: 5rem; /* Slightly smaller than main menu */
+  font-weight: bold;
+  text-transform: uppercase;
+  color: #ffffff;
+  text-shadow: 
+    0 0 5px #0ff, 0 0 10px #0ff,
+    0 0 20px #0ff, 0 0 40px #00aaff,
+    0 0 70px #00aaff;
+  margin-bottom: 30px;
+  letter-spacing: 0.08em;
+  text-align: center;
+}
+
+.garage-info {
+  position: absolute;
+  top: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  font-family: 'Arial Black', 'Impact', sans-serif;
+  font-size: 1.8rem;
+  color: #ffffff;
+  text-shadow: 
+    0 0 3px #0ff, 
+    0 0 6px #0ff,
+    0 0 15px #00aaff;
+  text-align: center;
+}
+
+/* Reuse menu button style, give it a shared class */
+.garage-button {
+  font-family: 'Arial Black', 'Impact', sans-serif; 
+  padding: 15px 30px; 
+  font-size: 1.8rem; 
+  text-transform: uppercase;
+  cursor: pointer;
+  background-color: transparent;
+  border: 3px solid #00aaff;
+  border-radius: 8px;
+  box-shadow: 0 0 8px #00aaff, inset 0 0 8px #00aaff;
+  color: #ffffff; 
+  text-shadow: 
+    0 0 3px #0ff, 0 0 6px #0ff,
+    0 0 10px #00aaff;
+  transition: background-color 0.3s, color 0.3s, box-shadow 0.3s, text-shadow 0.3s;
+}
+
+.garage-button:hover {
+  background-color: rgba(0, 170, 255, 0.1);
+  color: #ffffff; 
+  box-shadow: 0 0 15px #0ff, inset 0 0 12px #0ff;
+  text-shadow: 
+    0 0 5px #0ff, 0 0 10px #0ff,
+    0 0 15px #00aaff, 0 0 20px #00aaff;
+}
+
+/* Specific positioning for Back button (top-left) */
+.garage-button.back-button {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  padding: 10px 20px; /* Smaller padding */
+  font-size: 1.3rem; /* Smaller font size */
+  z-index: 20; /* Added: Ensure button is above car display area */
+}
+
+/* Specific positioning for Start Race button (bottom-center) */
+.garage-button.start-race-button {
+  position: absolute;
+  bottom: 40px;
+  right: 40px; 
+  padding: 20px 50px; /* Larger padding */
+  font-size: 2.2rem; /* Larger font size */
+  z-index: 20; /* Added: Ensure button is above car display area */
+}
+
+/* Left Button Column Container */
+.left-button-column {
+  position: absolute;
+  top: 50%; /* Center vertically */
+  left: 40px; /* Distance from left edge */
+  transform: translateY(-50%); /* Fine-tune vertical centering */
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* Space between buttons */
+}
+
+/* Style for buttons within the left column */
+.left-column-button {
+  /* Inherits base styles from .garage-button */
+  /* Adjust padding/font size if needed */
+  padding: 12px 25px; 
+  font-size: 1.5rem; 
+}
+
+/* Area to display the car in the center */
+.garage-car-display-area {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  /* Define dimensions or let the car component define its size */
+  /* width: 450px; /* Match PlayerCar width? */
+  /* height: 225px; /* Match PlayerCar height? */
+  /* background-color: rgba(255,0,0,0.1); /* Optional: Debug background */
+  z-index: 10; /* Ensure it's above background but below UI elements if needed */
+}
+
+/* Override PlayerCar positioning when inside the garage display area */
+.garage-car-display-area .player-car {
+  position: relative; /* Change from absolute */
+  bottom: auto; /* Remove game-specific positioning */
+  left: auto; /* Remove game-specific positioning */
+  /* transform: none; /* Remove game-specific positioning/centering */
+  transform: scale(4); /* Make car 4x bigger */
+  transform-origin: center center; /* Ensure scaling happens from the center */
+  transition: none; /* Disable transitions in garage */
+  /* Ensure it fills the container if needed, or uses its own size */
+}
+
+/* Ensure the centered class doesn't apply and scale is maintained */
+.garage-car-display-area .player-car.centered {
+  left: auto;
+  /* transform: none; */
+  transform: scale(4); /* Apply scale here too */
+}
+
+/* Hide headlight beam in garage, but keep source glows */
+.garage-car-display-area .player-car .headlight-glow {
+  display: none;
+}
+
+/* Reset headlight source blend mode in garage */
+.garage-car-display-area .player-car .headlight-source {
+  mix-blend-mode: normal; /* Disable color-dodge */
+  /* Optional: Adjust opacity or blur if needed */
+  /* opacity: 0.9; */
+  /* filter: blur(7px); */
+} 

@@ -107,4 +107,13 @@
   box-shadow: none; /* Remove glow */
   text-shadow: none; /* Remove text glow */
   opacity: 0.6; /* Make it look faded */
+}
+
+/* Positioning for the Back Button */
+.back-button {
+  position: absolute; /* Position relative to container */
+  top: 20px; /* Adjust spacing from top */
+  left: 20px; /* Adjust spacing from left */
+  padding: 10px 20px; /* Smaller padding than mode buttons */
+  font-size: 1.5rem; /* Smaller font size */
 } 

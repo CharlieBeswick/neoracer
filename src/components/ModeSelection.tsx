@@ -3,9 +3,10 @@ import './ModeSelection.css'; // We'll create this CSS file next
 
 interface ModeSelectionProps {
   onStartSinglePlayer: () => void;
+  onBackToMenu: () => void;
 }
 
-const ModeSelection: React.FC<ModeSelectionProps> = ({ onStartSinglePlayer }) => {
+const ModeSelection: React.FC<ModeSelectionProps> = ({ onStartSinglePlayer, onBackToMenu }) => {
   // Placeholder for multiplayer - does nothing for now
   const handleMultiplayerClick = () => {
     console.log("Multiplayer clicked - not implemented yet.");
@@ -14,6 +15,11 @@ const ModeSelection: React.FC<ModeSelectionProps> = ({ onStartSinglePlayer }) =>
 
   return (
     <div className="mode-selection-container"> {/* Reuse menu background style */}
+      {/* Back Button */}
+      <button onClick={onBackToMenu} className="mode-button back-button">
+        &lt; Back
+      </button>
+
       <h1 className="menu-title">Select Mode</h1> {/* Reuse menu title style */}
       <div className="mode-options"> {/* New class for button layout */}
         {/* Single Player Option */}
