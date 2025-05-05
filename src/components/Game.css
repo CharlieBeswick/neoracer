@@ -125,22 +125,22 @@
 
 /* Base class for pedal images */
 .game-control-pedal {
-  position: absolute; /* Add absolute positioning */
-  bottom: 4vh; /* Common vertical position */
-  z-index: 200; /* Keep pedals above other elements */
+  position: absolute; 
+  bottom: 4vh; /* Keep vertical position relative */
+  z-index: 200; 
   cursor: pointer;
   user-select: none; 
   -webkit-user-drag: none; 
   transition: transform 0.1s ease-out, filter 0.2s ease-out, opacity 0.2s ease-out;
-  width: clamp(90px, 22.5vmin, 180px); /* Keep adjusted size */
+  width: clamp(105px, 27vmin, 225px); /* Increased size by 50% */
   height: auto; 
 }
 
 /* Specific styles for Accelerate Pedal */
 .accelerate-pedal {
-  left: 18vw; /* Positioned to the right of clutch */
+  left: 80px; /* Adjusted Fixed position relative to edge */
   /* Green Neon Glow */
-  filter: drop-shadow(0 0 7px #0f0) /* Adjusted glow size */ 
+  filter: drop-shadow(0 0 7px #0f0) 
           drop-shadow(0 0 15px #0f0) 
           drop-shadow(0 0 25px #0f0);
 }
@@ -154,7 +154,7 @@
 
 /* Specific styles for Brake Pedal */
 .brake-pedal {
-  right: 5vw; /* Positioned on the right */
+  right: 20px; /* Fixed position from right edge */
   /* Red Neon Glow */
   filter: drop-shadow(0 0 7px #f00) 
           drop-shadow(0 0 15px #f00) 
@@ -170,7 +170,7 @@
 
 /* Specific styles for Clutch Pedal */
 .clutch-pedal {
-  left: 5vw; /* Positioned on the far left */
+  left: 10px; /* Adjusted Fixed position from left edge */
   /* Orange Neon Glow */
   filter: drop-shadow(0 0 7px #ffa500) 
           drop-shadow(0 0 15px #ff8c00) /* Darker orange */
@@ -189,17 +189,33 @@
   pointer-events: none; 
 }
 
-/* --- Mobile Specific Styles for Game --- */
+/* REMOVE Mobile Specific Styles for Game Pedals */
+/* 
 @media (max-width: 768px) {
-  /* Reduce pedal spacing on mobile */
-  .clutch-pedal {
-    left: 2.5vw; /* Closer to edge */
-  }
-  .accelerate-pedal {
-    left: 9vw; /* Closer to clutch */
-  }
-  /* Adjust brake pedal position slightly if needed */
-  .brake-pedal {
-    right: 3vw; 
-  }
+  ...
+}
+*/
+
+.game-overlay {
+  position: absolute;
+  top: 1.5vh; /* vh */
+  left: 1vw; /* vw */
+  z-index: 10; /* Ensure overlay is above background */
+  color: white;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+  padding: 1vmin; /* vmin */
+  border-radius: 5px;
+  font-family: 'Texturina', serif; /* Changed font */
+  font-size: clamp(0.7rem, 2vmin, 1rem); /* clamp */
+}
+
+.game-overlay p {
+  margin-bottom: 1vh; /* vh */
+}
+
+.game-overlay button {
+  padding: clamp(3px, 0.8vmin, 6px) clamp(6px, 1.5vmin, 12px); /* clamp */
+  font-size: clamp(0.6rem, 1.8vmin, 0.9rem); /* clamp */
+  cursor: pointer;
+  margin-left: 1vw !important; /* vw */
 } 
