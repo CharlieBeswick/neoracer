@@ -114,4 +114,76 @@
     0 0 25px #f00, 0 0 40px #f00; 
 }
 
-/* Old mobile styles removed */ 
+/* Old mobile styles removed */
+
+/* Container for Pedals */
+.pedal-container {
+  position: absolute;
+  bottom: 4vh; /* Adjust vertical position */
+  left: 5vw; /* Start position from left */
+  display: flex;
+  align-items: flex-end; /* Align bottoms of pedals */
+  gap: 3vw; /* Gap between pedals */
+  z-index: 200; /* Ensure container is above other elements */
+}
+
+/* Base class for pedal images */
+.game-control-pedal {
+  /* Removed absolute positioning */
+  cursor: pointer;
+  user-select: none; 
+  -webkit-user-drag: none; 
+  transition: transform 0.1s ease-out, filter 0.2s ease-out, opacity 0.2s ease-out;
+  width: clamp(90px, 22.5vmin, 180px); /* Adjusted Size (50% bigger) */
+  height: auto; 
+}
+
+/* Specific styles for Accelerate Pedal */
+.accelerate-pedal {
+  /* Green Neon Glow */
+  filter: drop-shadow(0 0 7px #0f0) /* Adjusted glow size */ 
+          drop-shadow(0 0 15px #0f0) 
+          drop-shadow(0 0 25px #0f0);
+}
+
+.accelerate-pedal:active {
+  transform: scale(0.95); 
+  filter: drop-shadow(0 0 10px #0f0) 
+          drop-shadow(0 0 20px #0f0) 
+          drop-shadow(0 0 35px #0f0); /* Brighter glow */
+}
+
+/* Specific styles for Brake Pedal */
+.brake-pedal {
+  /* Red Neon Glow */
+  filter: drop-shadow(0 0 7px #f00) 
+          drop-shadow(0 0 15px #f00) 
+          drop-shadow(0 0 25px #f00);
+}
+
+.brake-pedal:active {
+  transform: scale(0.95); 
+  filter: drop-shadow(0 0 10px #f00) 
+          drop-shadow(0 0 20px #f00) 
+          drop-shadow(0 0 35px #f00); /* Brighter glow */
+}
+
+/* Specific styles for Clutch Pedal */
+.clutch-pedal {
+  /* Orange Neon Glow */
+  filter: drop-shadow(0 0 7px #ffa500) 
+          drop-shadow(0 0 15px #ff8c00) /* Darker orange */
+          drop-shadow(0 0 25px #ff8c00);
+}
+
+.clutch-pedal:active {
+  /* No active state needed yet */
+}
+
+/* Disabled state for pedals */
+.game-control-pedal.disabled {
+  filter: grayscale(80%) brightness(0.6); 
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none; 
+} 

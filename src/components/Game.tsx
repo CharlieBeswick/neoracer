@@ -530,6 +530,44 @@ const Game: React.FC<GameProps> = ({
         isPaused={isPaused} 
       />
 
+      {/* --- Game Controls Container --- */}
+      <div className="pedal-container">
+        {/* Clutch Pedal Image Button (Placeholder) */}
+        <img 
+          src="/assets/gaspedal.png" // Using same image for now
+          alt="Clutch"
+          className="game-control-pedal clutch-pedal disabled" // Placeholder - always disabled for now
+          onClick={() => console.log("Clutch pressed - Not implemented")}
+          onDragStart={(e) => e.preventDefault()} 
+        />
+        
+        {/* Gas Pedal Image Button */}
+        <img 
+          src="/assets/gaspedal.png"
+          alt="Accelerate"
+          className={`game-control-pedal accelerate-pedal ${(!isEngineOn || isPaused || isBraking) ? 'disabled' : ''}`.trim()} 
+          onMouseDown={handleAccelerationStart}
+          onMouseUp={handleAccelerationEnd}
+          onMouseLeave={handleAccelerationEnd} 
+          onTouchStart={handleAccelerationStart} 
+          onTouchEnd={handleAccelerationEnd}
+          onDragStart={(e) => e.preventDefault()} 
+        />
+
+        {/* Brake Pedal Image Button */}
+        <img 
+          src="/assets/gaspedal.png" // Using same image for now
+          alt="Brake"
+          className={`game-control-pedal brake-pedal ${isPaused ? 'disabled' : ''}`.trim()} 
+          onMouseDown={handleBrakeStart}
+          onMouseUp={handleBrakeEnd}
+          onMouseLeave={handleBrakeEnd}
+          onTouchStart={handleBrakeStart}
+          onTouchEnd={handleBrakeEnd}
+          onDragStart={(e) => e.preventDefault()} 
+        />
+      </div>
+
       {/* Layer 10: UI Overlay (Note: Car z-index is higher) */}
       <div className="game-overlay">
         {/* Display UI speed (currentSpeed / 10) and engine state */}
@@ -539,27 +577,6 @@ const Game: React.FC<GameProps> = ({
           Engine: {isEngineOn ? 'ON' : 'OFF'}
         </p>
         {/* Control buttons */}
-        <button 
-          onMouseDown={handleAccelerationStart}
-          onMouseUp={handleAccelerationEnd}
-          onMouseLeave={handleAccelerationEnd} // Stop accelerating if mouse leaves button
-          onTouchStart={handleAccelerationStart} // Handle touch events
-          onTouchEnd={handleAccelerationEnd}
-          disabled={!isEngineOn || isPaused || isBraking} // Also disable accel if braking
-        >
-          Accelerate
-        </button> 
-        <button 
-            onMouseDown={handleBrakeStart}
-            onMouseUp={handleBrakeEnd}
-            onMouseLeave={handleBrakeEnd}
-            onTouchStart={handleBrakeStart}
-            onTouchEnd={handleBrakeEnd}
-            disabled={isPaused} // Disable only if paused
-            style={{marginLeft: '10px'}}
-        >
-            Brake
-        </button>
         <button onClick={toggleEngine} disabled={isEngineOn && currentSpeed > 0} style={{marginLeft: '10px'}}> 
             {isEngineOn ? 'Engine Stop' : 'Engine Start'}
         </button>
