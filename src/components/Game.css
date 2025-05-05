@@ -187,4 +187,19 @@
   opacity: 0.6;
   cursor: not-allowed;
   pointer-events: none; 
+}
+
+/* --- Mobile Specific Styles for Game --- */
+@media (max-width: 768px) {
+  /* Reduce pedal spacing on mobile */
+  .clutch-pedal {
+    left: 2.5vw; /* Closer to edge */
+  }
+  .accelerate-pedal {
+    left: 9vw; /* Closer to clutch */
+  }
+  /* Adjust brake pedal position slightly if needed */
+  .brake-pedal {
+    right: 3vw; 
+  }
 } 
