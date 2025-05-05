@@ -5,9 +5,14 @@ import PlayerCar from './PlayerCar'; // Import PlayerCar
 interface GarageProps {
   onStartRace: () => void;
   onBackToMenu: () => void;
+  showRotationOverlay: boolean;
 }
 
-const Garage: React.FC<GarageProps> = ({ onStartRace, onBackToMenu }) => {
+const Garage: React.FC<GarageProps> = ({ 
+  onStartRace, 
+  onBackToMenu,
+  showRotationOverlay
+}) => {
 
   // Add explicit handlers with logging
   const handleBackClick = () => {
@@ -22,6 +27,13 @@ const Garage: React.FC<GarageProps> = ({ onStartRace, onBackToMenu }) => {
 
   return (
     <div className="garage-container">
+      {/* Conditionally render rotation overlay */}
+      {showRotationOverlay && (
+        <div className="rotation-overlay">
+          <p>Please rotate your device to landscape mode.</p>
+        </div>
+      )}
+
       {/* Back Button - Positioned top-left */}
       <button onClick={handleBackClick} className="garage-button back-button">
         &lt; Back to Menu

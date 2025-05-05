@@ -17,41 +17,41 @@
   border-radius: 5px;
   font-family: 'Texturina', serif; /* Changed font */
   font-size: clamp(0.7rem, 2vmin, 1rem); /* clamp */
+  /* Remove specific text formatting if grid handles it */
 }
 
-.game-overlay p {
-  margin-bottom: 1vh; /* vh */
+/* Styles for the Grid Overlay */
+.grid-overlay {
+  display: grid;
+  /* Adjusted columns - Remove engine column */
+  grid-template-columns: auto auto auto; /* Data | Sep | Data */
+  gap: 0.5vh 1.5vw; /* Row gap, Column gap */
+  align-items: baseline; /* Align text along the baseline */
 }
 
-.game-overlay button {
-  padding: clamp(3px, 0.8vmin, 6px) clamp(6px, 1.5vmin, 12px); /* clamp */
-  font-size: clamp(0.6rem, 1.8vmin, 0.9rem); /* clamp */
-  cursor: pointer;
-  margin-left: 1vw !important; /* vw */
+.overlay-row {
+  display: contents; /* Makes children direct grid items */
 }
 
-.rotation-overlay {
-  position: fixed; /* Cover viewport */
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.85); /* Dark overlay */
-  color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  z-index: 1000; /* Above everything */
-  font-family: 'Texturina', serif; /* Changed font */
-  font-size: clamp(1rem, 4vmin, 1.5rem); /* clamp */
-  padding: 20px;
-  box-sizing: border-box;
+.overlay-row span {
+  /* Default alignment (can override below) */
+  text-align: left;
+  white-space: nowrap; /* Prevent wrapping */
 }
 
-.rotation-overlay p {
-  max-width: 80%;
+.overlay-row span.separator {
+  text-align: center; /* Center the separator */
+  padding: 0 0.5vw; /* Add slight padding around separator */
 }
+
+/* Optional: Right-align numerical data if desired */
+/* 
+.overlay-row span:nth-child(1),
+.overlay-row span:nth-child(3),
+.overlay-row span:nth-child(5) { 
+  text-align: right; 
+} 
+*/
 
 /* Countdown Display */
 .countdown-display {
@@ -196,26 +196,119 @@
 }
 */
 
-.game-overlay {
+/* --- Burger Menu Styles --- */
+
+.burger-menu-button {
   position: absolute;
-  top: 1.5vh; /* vh */
-  left: 1vw; /* vw */
-  z-index: 10; /* Ensure overlay is above background */
-  color: white;
-  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
-  padding: 1vmin; /* vmin */
-  border-radius: 5px;
-  font-family: 'Texturina', serif; /* Changed font */
-  font-size: clamp(0.7rem, 2vmin, 1rem); /* clamp */
-}
-
-.game-overlay p {
-  margin-bottom: 1vh; /* vh */
-}
-
-.game-overlay button {
-  padding: clamp(3px, 0.8vmin, 6px) clamp(6px, 1.5vmin, 12px); /* clamp */
-  font-size: clamp(0.6rem, 1.8vmin, 0.9rem); /* clamp */
+  top: 2vh;
+  right: 2vw;
+  z-index: 210; /* Above pedals */
+  padding: clamp(8px, 1.5vh, 15px);
+  font-size: clamp(1.5rem, 4vmin, 2.5rem); /* Size for burger icon */
+  background-color: transparent;
+  border: clamp(2px, 0.4vmin, 2px) solid #00aaff;
+  border-radius: 6px;
+  color: #ffffff;
+  text-shadow: 0 0 3px #0ff, 0 0 6px #0ff, 0 0 10px #00aaff;
+  box-shadow: 0 0 6px #00aaff, inset 0 0 6px #00aaff;
   cursor: pointer;
-  margin-left: 1vw !important; /* vw */
+  line-height: 1; /* Ensure icon aligns well */
+  transition: background-color 0.3s, box-shadow 0.3s, text-shadow 0.3s;
+}
+
+.burger-menu-button:hover {
+  background-color: rgba(0, 170, 255, 0.1); 
+  box-shadow: 0 0 10px #0ff, inset 0 0 8px #0ff;
+  text-shadow: 0 0 5px #0ff, 0 0 10px #0ff, 0 0 15px #00aaff;
+}
+
+.burger-dropdown-menu {
+  position: absolute;
+  top: calc(2vh + clamp(8px, 1.5vh, 15px) * 2 + clamp(2px, 0.4vmin, 2px) * 2 + 1vh); /* Position below button */
+  right: 2vw;
+  z-index: 205; /* Below button but above pedals */
+  background-color: rgba(10, 20, 40, 0.85); /* Darker background */
+  border: 2px solid rgba(0, 170, 255, 0.6);
+  border-radius: 8px;
+  padding: 2vmin;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5vmin;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+}
+
+.dropdown-button {
+  /* Inherits .menu-button base styles */
+  /* Override/adjust for dropdown context */
+  display: block;
+  width: 100%; 
+  text-align: center;
+  padding: clamp(8px, 1.5vh, 12px) clamp(15px, 3vw, 25px); 
+  font-size: clamp(0.9rem, 2.5vmin, 1.3rem);
+  margin: 0; /* Remove potential inherited margin */
+}
+
+/* Ensure dropdown buttons use the correct font */
+.dropdown-button {
+  font-family: 'Texturina', serif;
+}
+
+/* --- Start Engine Styles --- */
+
+.start-engine-container {
+  position: absolute;
+  top: 15vh; /* Adjusted: Position near top */
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 150; /* Below controls but above background */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3vh;
+}
+
+.start-engine-prompt {
+  font-family: 'Texturina', serif;
+  font-size: clamp(1.2rem, 3.5vmin, 2rem);
+  color: #ffffff;
+  text-shadow: 0 0 5px #0ff, 0 0 10px #00aaff; 
+  text-align: center;
+}
+
+.start-engine-button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.start-button-circle {
+  width: clamp(80px, 20vmin, 150px);
+  height: clamp(80px, 20vmin, 150px);
+  border-radius: 50%;
+  border: clamp(3px, 0.8vmin, 5px) solid #00aaff;
+  box-shadow: 0 0 8px #00aaff, inset 0 0 8px #00aaff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative; /* For line positioning */
+  transition: box-shadow 0.2s ease-in-out;
+}
+
+.start-button-line {
+  width: 65%;
+  height: clamp(3px, 0.8vmin, 5px);
+  background-color: #00aaff; 
+  box-shadow: 0 0 5px #0ff;
+  transform: rotate(-50deg); /* Initial angle */
+  transition: transform 0.2s ease-in-out; /* Smooth rotation */
+}
+
+/* Active state for button press */
+.start-engine-button:active .start-button-circle {
+   box-shadow: 0 0 15px #0ff, inset 0 0 12px #0ff; /* Enhance glow */
+}
+
+.start-engine-button:active .start-button-line {
+  transform: rotate(50deg); /* Rotate 100deg clockwise (-50 + 100 = 50) */
 } 

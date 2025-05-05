@@ -4,9 +4,14 @@ import './ModeSelection.css'; // We'll create this CSS file next
 interface ModeSelectionProps {
   onStartSinglePlayer: () => void;
   onBackToMenu: () => void;
+  showRotationOverlay: boolean;
 }
 
-const ModeSelection: React.FC<ModeSelectionProps> = ({ onStartSinglePlayer, onBackToMenu }) => {
+const ModeSelection: React.FC<ModeSelectionProps> = ({ 
+  onStartSinglePlayer, 
+  onBackToMenu,
+  showRotationOverlay
+}) => {
   // Placeholder for multiplayer - does nothing for now
   const handleMultiplayerClick = () => {
     console.log("Multiplayer clicked - not implemented yet.");
@@ -15,6 +20,13 @@ const ModeSelection: React.FC<ModeSelectionProps> = ({ onStartSinglePlayer, onBa
 
   return (
     <div className="mode-selection-container"> {/* Reuse menu background style */}
+      {/* Conditionally render rotation overlay */}
+      {showRotationOverlay && (
+        <div className="rotation-overlay">
+          <p>Please rotate your device to landscape mode.</p>
+        </div>
+      )}
+
       {/* Back Button */}
       <button onClick={onBackToMenu} className="mode-button back-button">
         &lt; Back

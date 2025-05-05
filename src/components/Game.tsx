@@ -20,6 +20,7 @@ interface GameProps {
   toggleFullscreen: () => void;
   isMuted: boolean; // Add prop
   toggleMute: () => void; // Add prop
+  showRotationOverlay: boolean; // Add prop
 }
 
 // Constants for parallax effect
@@ -47,12 +48,11 @@ const Game: React.FC<GameProps> = ({
   isFullscreen,
   toggleFullscreen,
   isMuted, // Destructure prop
-  toggleMute // Destructure prop
+  toggleMute, // Destructure prop
+  showRotationOverlay // Destructure prop
 }) => {
   // State to manage the player's current scrolling speed
   const [currentSpeed, setCurrentSpeed] = useState(BASE_SCROLL_SPEED);
-  const [isLandscape, setIsLandscape] = useState(true); // Assume landscape initially
-  const [showRotationOverlay, setShowRotationOverlay] = useState(false);
   const [isEngineOn, setIsEngineOn] = useState(false); // Engine state, starts OFF
   const [isAccelerating, setIsAccelerating] = useState(false); // State for acceleration button press
   const [isBraking, setIsBraking] = useState(false); // State for braking button press
@@ -82,6 +82,14 @@ const Game: React.FC<GameProps> = ({
   const lastFrameTimeRef = useRef<number | null>(null); // Ref for game loop timing
   const animationFrameIdRef = useRef<number | null>(null); // Ref for animation frame ID
   const scrollPosRef = useRef<number>(0); // Ref to hold current scrollPos for interval
+
+  // --- Burger Menu State ---
+  const [isBurgerMenuOpen, setIsBurgerMenuOpen] = useState(false); // State for burger menu
+
+  // --- Toggle Burger Menu --- 
+  const toggleBurgerMenu = () => {
+    setIsBurgerMenuOpen(prev => !prev);
+  };
 
   // --- Toggle Engine Function ---
   const toggleEngine = () => {
@@ -391,43 +399,6 @@ const Game: React.FC<GameProps> = ({
   // but including them ensures loop logic always has latest state if needed for complex conditions.
   }, [isEngineOn, isPaused, isAccelerating, isBraking, targetRelativeDistance, scrollPos, raceOutcome]); // Add targetRelativeDistance dependency for lerp
 
-  // --- Orientation Logic ---
-  const checkOrientation = useCallback(() => {
-    // Use screen.orientation if available, fallback to width/height ratio
-    const landscape =
-      screen.orientation?.type?.includes('landscape') ??
-      window.innerWidth > window.innerHeight;
-    setIsLandscape(landscape);
-    setShowRotationOverlay(!landscape);
-  }, []);
-
-  useEffect(() => {
-    // Check orientation on mount
-    checkOrientation();
-
-    // Attempt to lock orientation (best effort)
-    const orientation = screen.orientation as any; // Cast to any here
-    orientation?.lock?.('landscape').catch((err: Error) => {
-      console.warn('Screen orientation lock failed:', err.message);
-      // Locking might fail, rely on manual rotation + overlay
-    });
-
-    // Listen for changes
-    window.addEventListener('resize', checkOrientation);
-    if (screen.orientation) {
-      screen.orientation.addEventListener('change', checkOrientation);
-    }
-
-    return () => {
-      window.removeEventListener('resize', checkOrientation);
-      if (screen.orientation) {
-        screen.orientation.removeEventListener('change', checkOrientation);
-      }
-      // Optional: Unlock orientation on exit?
-      // screen.orientation?.unlock?.();
-    };
-  }, [checkOrientation]);
-
   // --- Event Handlers for Acceleration --- 
   const handleAccelerationStart = () => {
       if (isEngineOn && !isPaused) { // Only accelerate if engine on and not paused
@@ -570,26 +541,65 @@ const Game: React.FC<GameProps> = ({
         onContextMenu={(e) => e.preventDefault()} // Prevent context menu on long press
       />
 
-      {/* Layer 10: UI Overlay */}
-      <div className="game-overlay">
-        {/* Display UI speed (currentSpeed / 10) and engine state */}
-        <p>
-          Player Speed: {(currentSpeed / 10).toFixed(0)} | 
-          Opponent Speed: {(opponentCurrentSpeed / 10).toFixed(0)} | 
-          Engine: {isEngineOn ? 'ON' : 'OFF'}
-        </p>
-        {/* Control buttons */}
-        <button onClick={toggleEngine} disabled={isEngineOn && currentSpeed > 0} style={{marginLeft: '10px'}}> 
-            {isEngineOn ? 'Engine Stop' : 'Engine Start'}
-        </button>
-        <button onClick={toggleFullscreen} style={{marginLeft: '10px'}}>
-          {isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
-        </button>
-        <button onClick={toggleMute} style={{marginLeft: '10px'}}>
-          {isMuted ? 'Unmute' : 'Mute'}
-        </button>
-        <button onClick={onBackToMenu} style={{marginLeft: '10px'}}>Back to Menu</button>
+      {/* --- Burger Menu Button --- */}
+      <button onClick={toggleBurgerMenu} className="burger-menu-button">
+        &#9776; {/* Unicode Burger Icon */}
+      </button>
+
+      {/* --- Burger Dropdown Menu --- */}
+      {isBurgerMenuOpen && (
+        <div className="burger-dropdown-menu">
+          <button onClick={toggleFullscreen} className="menu-button dropdown-button">
+            {isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
+          </button>
+          <button onClick={toggleMute} className="menu-button dropdown-button">
+            {isMuted ? 'Unmute' : 'Mute'}
+          </button>
+          <button onClick={onBackToMenu} className="menu-button dropdown-button">
+            Back to Menu
+          </button>
+        </div>
+      )}
+
+      {/* Layer 10: UI Overlay (Info only) */}
+      <div className="game-overlay grid-overlay">
+        {/* Row 1: Speed */} 
+        <div className="overlay-row">
+          <span>Player Speed: {(currentSpeed / 10).toFixed(0)}</span>
+          <span className="separator">|</span>
+          <span>Opponent Speed: {(opponentCurrentSpeed / 10).toFixed(0)}</span>
+        </div>
+
+        {/* Row 2: Gear */} 
+        <div className="overlay-row">
+          <span>Player Gear: 1</span>
+          <span className="separator">|</span>
+          <span>Opponent Gear: 1</span>
+        </div>
+
+        {/* Row 3: Distance */} 
+        <div className="overlay-row">
+          <span>Player Distance: {Math.abs(scrollPos).toFixed(0)} px</span>
+          <span className="separator">|</span>
+          <span>Opponent Distance: {Math.abs(opponentScrollPos).toFixed(0)} px</span>
+        </div>
       </div>
+
+      {/* --- Start Engine Prompt & Button (Conditionally Rendered) --- */}
+      {!isEngineOn && (
+        <div className="start-engine-container">
+          <p className="start-engine-prompt">Start your engine to begin</p>
+          <button 
+            className="start-engine-button" 
+            onClick={toggleEngine} 
+            aria-label="Start Engine"
+          >
+            <div className="start-button-circle">
+              <div className="start-button-line"></div>
+            </div>
+          </button>
+        </div>
+      )}
     </div>
   );
 };

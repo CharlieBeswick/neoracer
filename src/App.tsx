@@ -15,6 +15,8 @@ function App() {
   const menuAudioRef = useRef<HTMLAudioElement | null>(null); // Ref for menu music
   const [isFullscreen, setIsFullscreen] = useState(false); // Moved from Game.tsx
   const [isMuted, setIsMuted] = useState(false); // Add mute state here
+  const [isLandscape, setIsLandscape] = useState(true); // Assume landscape initially
+  const [showRotationOverlay, setShowRotationOverlay] = useState(false);
 
   // --- Fullscreen Logic (Moved from Game.tsx) ---
   const checkFullscreenStatus = useCallback(() => {
@@ -53,6 +55,42 @@ function App() {
     }
   }, [isMuted, menuAudioRef.current]); // Re-run if isMuted changes or audio loads
   // --- End Mute Logic ---
+
+  // --- Orientation Logic (Moved from Game.tsx) ---
+  const checkOrientation = useCallback(() => {
+    const landscape =
+      screen.orientation?.type?.includes('landscape') ??
+      window.innerWidth > window.innerHeight;
+    setIsLandscape(landscape);
+    // Show overlay only if NOT landscape AND game state requires it
+    const requiresLandscape = ['modeSelection', 'garage', 'playing'].includes(gameState);
+    setShowRotationOverlay(!landscape && requiresLandscape);
+  }, [gameState]); // Add gameState dependency
+
+  useEffect(() => {
+    // Check orientation on mount
+    checkOrientation();
+
+    // Attempt to lock orientation (best effort)
+    const orientation = screen.orientation as any; // Cast to any here
+    orientation?.lock?.('landscape').catch((err: Error) => {
+      console.warn('Screen orientation lock failed:', err.message);
+    });
+
+    // Listen for changes
+    window.addEventListener('resize', checkOrientation);
+    if (screen.orientation) {
+      screen.orientation.addEventListener('change', checkOrientation);
+    }
+
+    return () => {
+      window.removeEventListener('resize', checkOrientation);
+      if (screen.orientation) {
+        screen.orientation.removeEventListener('change', checkOrientation);
+      }
+    };
+  }, [checkOrientation]); // Dependency remains checkOrientation
+  // --- End Orientation Logic ---
 
   // Initialize and cleanup menu audio
   useEffect(() => {
@@ -136,20 +174,31 @@ function App() {
                  toggleMute={toggleMute} // Pass mute function
                />;
       case 'modeSelection':
-        return <ModeSelection onStartSinglePlayer={goToGarage} onBackToMenu={goToMenu} />;
+        // Pass orientation props
+        return <ModeSelection 
+                 onStartSinglePlayer={goToGarage} 
+                 onBackToMenu={goToMenu} 
+                 showRotationOverlay={showRotationOverlay}
+               />;
       case 'garage':
-        return <Garage onStartRace={startRace} onBackToMenu={goToMenu} />;
+        // Pass orientation props
+        return <Garage 
+                 onStartRace={startRace} 
+                 onBackToMenu={goToMenu} 
+                 showRotationOverlay={showRotationOverlay}
+               />;
       case 'playing':
-        // Pass fullscreen & mute props to Game
+        // Pass fullscreen, mute & orientation props to Game
         return <Game 
                  onBackToMenu={goToMenu}
                  isFullscreen={isFullscreen} 
                  toggleFullscreen={toggleFullscreen} 
-                 isMuted={isMuted} // Pass mute state
-                 toggleMute={toggleMute} // Pass mute function
+                 isMuted={isMuted}
+                 toggleMute={toggleMute}
+                 showRotationOverlay={showRotationOverlay} // Pass orientation prop
                />;
       case 'devlog':
-        // Pass mute props to DevLog? Only if it needs controls
+        // Dev log does NOT need orientation check
         return <DevLog onBackToMenu={goToMenu} />;
       // case 'gameover':
       //   return <GameOver onRestart={startGame} onMenu={goToMenu} />;

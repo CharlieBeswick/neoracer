@@ -20,4 +20,30 @@ body {
 .App {
   height: 100vh;
   width: 100vw;
+}
+
+/* --- Shared Styles --- */
+
+/* Rotation Overlay (Moved from Game.css) */
+.rotation-overlay {
+  position: fixed; /* Cover viewport */
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.85); /* Dark overlay */
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  z-index: 1000; /* Above everything */
+  font-family: 'Texturina', serif; /* Use selected font */
+  font-size: clamp(1rem, 4vmin, 1.5rem); /* Responsive font size */
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.rotation-overlay p {
+  max-width: 80%;
 } 

@@ -15,6 +15,22 @@ interface LogEntry {
 
 // Array to hold log entries - add new entries to the top
 const logEntries: LogEntry[] = [
+  // --- NEW Entry ---
+  {
+    date: '2024-05-17', // Use current date or adjust as needed
+    version: 'v0.4.1',
+    title: 'Post-Pedal Debugging & Known Issues',
+    content: (
+      <>
+        <p>Continued debugging efforts related to game state transitions:</p>
+        <ul>
+          <li><strong>Start Engine Sequence:</strong> Investigated issues with the start button animation delay and the subsequent race countdown initiation. Added detailed logging to trace the sequence. <i>(Current Status: Animation/delay not reliably working)</i>.</li>
+          <li><strong>Post-Race Navigation:</strong> Attempted multiple strategies (useEffect, direct setTimeout, state-based interval) to implement the 5-second auto-return to the Garage screen after a race outcome ('win'/'lose'). Added detailed logging. <i>(Current Status: Auto-return not functional)</i>.</li>
+        </ul>
+        <p>Addressed audio loading errors (renamed <code>racesound.mp3</code>). Cache or support issues might persist for some audio files.</p>
+      </>
+    ),
+  },
   // --- Newest Entry --- 
   {
     date: '2024-05-17', // Placeholder date
