@@ -17,6 +17,26 @@ interface LogEntry {
 const logEntries: LogEntry[] = [
   // --- Newest Entry --- 
   {
+    date: '2024-05-17', // Placeholder date
+    version: 'v0.4.0',
+    title: 'Image-Based Pedal Controls & Mobile Layout Refinements',
+    content: (
+      <>
+        <p>Replaced text-based accelerator/brake buttons with image-based pedals for a more immersive feel during gameplay.</p>
+        <ul>
+          <li>Implemented Gas (Accelerate), Brake, and placeholder Clutch pedals using image assets (`gaspedal.png`).</li>
+          <li>Applied distinct neon glows: Green (Gas), Red (Brake), Orange (Clutch).</li>
+          <li>Positioned Clutch and Gas pedals on the left, Brake pedal on the right using fixed pixel offsets for consistent mobile layout.</li>
+          <li>Adjusted pedal size using `clamp()` for responsive scaling.</li>
+          <li>Added `:active` state styling for visual feedback when pedals are pressed.</li>
+          <li>Implemented `onContextMenu` prevention to disable the default image context menu on long-press (mobile).</li>
+          <li>Updated conditional disabling logic based on game state (`isPaused`, `isEngineOn`, `isBraking`).</li>
+        </ul>
+      </>
+    ),
+  },
+  // --- Most Recent --- 
+  {
     date: '2024-05-16', // Placeholder date
     version: 'v0.3.0',
     title: 'Font Update, Menu Controls & Mode Screen Layout',
