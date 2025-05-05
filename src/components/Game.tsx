@@ -530,45 +530,47 @@ const Game: React.FC<GameProps> = ({
         isPaused={isPaused} 
       />
 
-      {/* --- Game Controls Container --- */}
-      <div className="pedal-container">
-        {/* Clutch Pedal Image Button (Placeholder) */}
-        <img 
-          src="/assets/gaspedal.png" // Using same image for now
-          alt="Clutch"
-          className="game-control-pedal clutch-pedal disabled" // Placeholder - always disabled for now
-          onClick={() => console.log("Clutch pressed - Not implemented")}
-          onDragStart={(e) => e.preventDefault()} 
-        />
+      {/* --- Game Controls (Individual Pedals) --- */}
+
+      {/* Clutch Pedal Image Button (Placeholder) */}
+      <img 
+        src="/assets/gaspedal.png" // Using same image for now
+        alt="Clutch"
+        className="game-control-pedal clutch-pedal disabled" // Placeholder - always disabled for now
+        onClick={() => console.log("Clutch pressed - Not implemented")}
+        onDragStart={(e) => e.preventDefault()} 
+        onContextMenu={(e) => e.preventDefault()} // Prevent context menu on long press
+      />
         
-        {/* Gas Pedal Image Button */}
-        <img 
-          src="/assets/gaspedal.png"
-          alt="Accelerate"
-          className={`game-control-pedal accelerate-pedal ${(!isEngineOn || isPaused || isBraking) ? 'disabled' : ''}`.trim()} 
-          onMouseDown={handleAccelerationStart}
-          onMouseUp={handleAccelerationEnd}
-          onMouseLeave={handleAccelerationEnd} 
-          onTouchStart={handleAccelerationStart} 
-          onTouchEnd={handleAccelerationEnd}
-          onDragStart={(e) => e.preventDefault()} 
-        />
+      {/* Gas Pedal Image Button */}
+      <img 
+        src="/assets/gaspedal.png"
+        alt="Accelerate"
+        className={`game-control-pedal accelerate-pedal ${(!isEngineOn || isPaused || isBraking) ? 'disabled' : ''}`.trim()} 
+        onMouseDown={handleAccelerationStart}
+        onMouseUp={handleAccelerationEnd}
+        onMouseLeave={handleAccelerationEnd} 
+        onTouchStart={handleAccelerationStart} 
+        onTouchEnd={handleAccelerationEnd}
+        onDragStart={(e) => e.preventDefault()} 
+        onContextMenu={(e) => e.preventDefault()} // Prevent context menu on long press
+      />
 
-        {/* Brake Pedal Image Button */}
-        <img 
-          src="/assets/gaspedal.png" // Using same image for now
-          alt="Brake"
-          className={`game-control-pedal brake-pedal ${isPaused ? 'disabled' : ''}`.trim()} 
-          onMouseDown={handleBrakeStart}
-          onMouseUp={handleBrakeEnd}
-          onMouseLeave={handleBrakeEnd}
-          onTouchStart={handleBrakeStart}
-          onTouchEnd={handleBrakeEnd}
-          onDragStart={(e) => e.preventDefault()} 
-        />
-      </div>
+      {/* Brake Pedal Image Button */}
+      <img 
+        src="/assets/gaspedal.png" // Using same image for now
+        alt="Brake"
+        className={`game-control-pedal brake-pedal ${isPaused ? 'disabled' : ''}`.trim()} 
+        onMouseDown={handleBrakeStart}
+        onMouseUp={handleBrakeEnd}
+        onMouseLeave={handleBrakeEnd}
+        onTouchStart={handleBrakeStart}
+        onTouchEnd={handleBrakeEnd}
+        onDragStart={(e) => e.preventDefault()} 
+        onContextMenu={(e) => e.preventDefault()} // Prevent context menu on long press
+      />
 
-      {/* Layer 10: UI Overlay (Note: Car z-index is higher) */}
+      {/* Layer 10: UI Overlay */}
       <div className="game-overlay">
         {/* Display UI speed (currentSpeed / 10) and engine state */}
         <p>
