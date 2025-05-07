@@ -114,6 +114,7 @@
   display: flex;
   flex-direction: column;
   gap: 2.5vh; /* vh */
+  z-index: 25; /* Ensure buttons are above car display area */
 }
 
 /* Style for buttons within the left column */
@@ -140,7 +141,7 @@
   top: 55%; /* Adjusted vertical position */
   left: 50%;
   transform: translate(-50%, -50%);
-  width: clamp(1080px, 192vmin, 2160px); /* Increased by 20% from clamp(900px, 160vmin, 1800px) */
+  width: clamp(60vw, 85vw, 1150px); /* Slightly larger preferred and max width */
   /* height will be determined by car aspect ratio */
   z-index: 10;
 }
@@ -187,3 +188,39 @@
  ...
 }
 */ 
+
+/* New Media Query for Mobile Landscape Optimizations */
+@media (max-width: 896px) {
+  .garage-button.start-race-button {
+    padding: clamp(15px, 2.5vh, 20px) clamp(10px, 2vw, 20px); /* More compact padding */
+    font-size: clamp(0.9rem, 3.5vmin, 1.6rem); /* Smaller font */
+  }
+
+  .left-column-button {
+    padding: clamp(7px, 1.6vh, 12px) clamp(12px, 2.2vw, 22px); /* More compact padding */
+    font-size: clamp(0.8rem, 2.5vmin, 1.3rem); /* Smaller font */
+  }
+
+  /* Further reduce car size slightly if absolutely needed on very small landscape heights */
+  /* Example for very narrow landscape heights, adjust if needed */
+  @media (max-height: 450px) {
+    .garage-car-display-area {
+      width: clamp(55vw, 70vw, 900px);
+    }
+    .garage-button.start-race-button {
+      font-size: clamp(0.8rem, 3vmin, 1.4rem);
+      bottom: 2vh; /* Ensure it doesn't get cut off */
+      right: 2vw;
+    }
+    .left-column-button {
+      font-size: clamp(0.7rem, 2.2vmin, 1.1rem);
+      gap: 1.5vh;
+    }
+    .garage-title {
+      font-size: clamp(2rem, 6vmin, 4rem);
+    }
+    .garage-info {
+      font-size: clamp(0.8rem, 2.5vmin, 1.5rem);
+    }
+  }
+} 
