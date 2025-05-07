@@ -18,6 +18,34 @@ const logEntries: LogEntry[] = [
   // --- NEW Entry ---
   {
     date: '2024-05-18', // Assuming today's date, adjust if needed
+    version: 'v0.5.1',
+    title: 'Garage Layout & Responsive Refinements',
+    content: (
+      <>
+        <p>Further refined the Garage screen layout for improved spacing and responsiveness, particularly addressing issues identified on mobile views.</p>
+        <ul>
+          <li><strong>Header Positioning:</strong>
+            <ul>
+              <li>Adjusted the main title ('Garage', 'Profile', etc.) to sit flush against the top edge of the screen.</li>
+              <li>Reduced the space between the main title and the subtitle below it for a tighter grouping.</li>
+            </ul>
+          </li>
+          <li><strong>Left Navigation:</strong> Moved the column of buttons ('Garage', 'Profile'...) flush against the left edge of the screen.</li>
+          <li><strong>Content Panel (Profile, Store, etc.):</strong>
+            <ul>
+              <li>Repositioned the panel to start to the right of the left navigation buttons, preventing overlap.</li>
+              <li>Resized the panel to stretch vertically from below the header area down towards the bottom of the screen.</li>
+              <li>Updated media queries to better handle panel positioning and sizing on various screen sizes (including mobile landscape).</li>
+            </ul>
+          </li>
+        </ul>
+        <p>These changes aim for a cleaner layout and better utilization of screen space across different devices.</p>
+      </>
+    ),
+  },
+  // --- NEW Entry ---
+  {
+    date: '2024-05-18', // Assuming today's date, adjust if needed
     version: 'v0.5.0',
     title: 'Garage Screen Overhaul & Visual Enhancements',
     content: (

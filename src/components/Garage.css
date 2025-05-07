@@ -3,8 +3,6 @@
 .garage-container {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center; /* Center content vertically */
   min-height: 100vh;
   /* Garage background */
   background-image: url('/assets/spgarage.png'); /* CORRECTED: Path to your garage image */
@@ -13,37 +11,45 @@
   background-repeat: no-repeat;
   background-color: rgba(0, 0, 10, 0.3); /* Slight dark overlay */
   background-blend-mode: multiply; 
-  padding: 20px;
+  padding: 0; /* Removed all padding to allow flush elements */
   box-sizing: border-box;
   overflow: hidden; 
   position: relative; /* Needed for absolute positioning of buttons */
 }
 
-/* Reuse menu title style */
+/* Style the new header container */
+.garage-header {
+  width: 100%;
+  text-align: center;
+  padding-top: 2px; /* Was 0; Reduced gap above title */
+  position: relative; /* Keep in flow, but allow z-index if needed */
+  z-index: 20; /* Ensure it's above background elements but could be below specific buttons if needed */
+}
+
+/* Title - Removed absolute positioning */
 .garage-title {
-  position: absolute;
-  top: 3vh; /* vh */
-  left: 50%;
-  transform: translateX(-50%);
   font-family: 'Texturina', serif;
-  font-size: clamp(2.5rem, 7vmin, 5rem); /* clamp */
+  font-size: clamp(2.5rem, 7vmin, 5rem); 
   font-weight: bold;
   text-transform: uppercase;
   color: #ffffff;
   text-shadow: 0 0 5px #0ff, 0 0 10px #0ff, 0 0 20px #0ff, 0 0 40px #00aaff, 0 0 70px #00aaff;
-  margin-bottom: 3vh; /* vh */
+  margin-bottom: 0px; /* Keep margin 0 */
   letter-spacing: 0.08em;
   text-align: center;
+  /* Added small bottom margin for gap */
+  margin-top: 0;
+  margin-left: auto;
+  margin-right: auto;
 }
 
+/* Subtitle - Removed absolute positioning */
 .garage-info {
-  position: absolute;
-  top: 12vh; /* Adjusted vh position below title */
-  left: 50%;
-  transform: translateX(-50%);
-  width: 80%;
+  width: fit-content; /* Adjust width to content */
+  margin: 0 auto; /* Center the element */
+  margin-top: 2px; /* Was 5px; Reduced gap below title */
   font-family: 'Texturina', serif;
-  font-size: clamp(1rem, 3vmin, 1.8rem); /* clamp */
+  font-size: clamp(1rem, 3vmin, 1.8rem); 
   color: #ffffff;
   text-shadow: 0 0 3px #0ff, 0 0 6px #0ff, 0 0 15px #00aaff;
   text-align: center;
@@ -75,8 +81,9 @@
 /* Specific positioning for Back button (top-left) */
 .garage-button.back-button {
   position: absolute;
-  top: 2vh; /* vh */
-  left: 3vw; /* vw */
+  top: 1%; /* Adjust relative to container edge */
+  left: 1%; /* Adjust relative to container edge */
+  /* Reverted to original padding and font-size for a snugger fit around its text */
   padding: clamp(8px, 1.5vh, 12px) clamp(15px, 2.5vw, 25px); 
   font-size: clamp(0.9rem, 2.2vmin, 1.3rem); 
   z-index: 20;
@@ -109,12 +116,13 @@
 .left-button-column {
   position: absolute;
   top: 50%; 
-  left: 4vw; /* vw */
+  left: 0; /* Moved flush left */
+  padding-left: 1%; /* Add small padding to align content inside buttons */
   transform: translateY(-50%);
   display: flex;
   flex-direction: column;
-  gap: 2.5vh; /* vh */
-  z-index: 25; /* Ensure buttons are above car display area */
+  gap: 2.5vh; 
+  z-index: 25; 
 }
 
 /* Style for buttons within the left column */
@@ -124,8 +132,8 @@
   font-size: clamp(0.9rem, 2.8vmin, 1.5rem); 
 }
 
-/* Style for the active/disabled "Garage" button in the left column */
-.left-button-column .garage-button:disabled {
+/* Style for the active "Garage" button in the left column */
+.left-button-column .garage-button.active {
   background-color: rgba(0, 170, 255, 0.1); /* Match hover background */
   color: #ffffff; /* Match hover text color */
   box-shadow: 0 0 15px #0ff, inset 0 0 12px #0ff; /* Match hover box-shadow */
@@ -135,49 +143,60 @@
   cursor: default; /* Indicate it's not clickable */
 }
 
-/* Area to display the car in the center */
-.garage-car-display-area {
+/* Wrapper for just the car in the default Garage view */
+.garage-car-wrapper {
   position: absolute;
-  top: 55%; /* Adjusted vertical position */
+  top: 55%; 
   left: 50%;
   transform: translate(-50%, -50%);
-  width: clamp(60vw, 85vw, 1150px); /* Slightly larger preferred and max width */
-  /* height will be determined by car aspect ratio */
+  width: clamp(60vw, 85vw, 1150px); 
   z-index: 10;
+  /* Use flex to center car if needed, or just let car fill */
+  display: flex; 
+  align-items: center; 
+  justify-content: center;
+  /* No background/border/padding needed */
 }
 
-/* Override PlayerCar positioning when inside the garage display area */
-.garage-car-display-area .player-car {
-  position: relative;
+/* Styled panel for other views (Profile, Store, etc.) */
+.garage-content-panel {
+  position: absolute;
+  /* Removed vertical centering */
+  /* top: 55%; Removed */
+  /* transform: translateY(-50%); Removed */
+  /* Position below header and stretch to near bottom */
+  top: 15vh; /* Start below header */
+  bottom: 1%; /* Extend almost to bottom */
+  left: 18vw; 
+  right: 3vw; 
+  width: auto; 
+  /* min-height: 50vh; Removed - top/bottom define height */
+  padding: 20px; 
+  box-sizing: border-box;
+  background-color: rgba(15, 25, 55, 0.7); 
+  border: 2px solid rgba(0, 170, 255, 0.5); 
+  border-radius: 10px; 
+  box-shadow: 0 0 15px rgba(0, 170, 255, 0.2); 
+  z-index: 10;
+  overflow-y: auto; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  /* Added text color for placeholder */
+  color: white;
+}
+
+/* PlayerCar styling when inside the car wrapper */
+.garage-car-wrapper .player-car {
+  position: relative; 
   bottom: auto;
   left: auto;
-  /* Remove scale, let parent size dictate */
   transform: none; 
   transform-origin: center center;
   transition: none;
-  /* Make car fill the container proportionally */
-  width: 100%; 
+  width: 100%; /* Let car fill the wrapper width */ 
   height: auto; 
-  aspect-ratio: 2 / 1; /* Explicitly set aspect ratio from original 450px/225px */
-}
-
-/* Ensure the centered class doesn't apply */
-.garage-car-display-area .player-car.centered {
-  left: auto;
-  transform: none;
-}
-
-/* Hide headlight beam in garage, but keep source glows */
-.garage-car-display-area .player-car .headlight-glow {
-  display: none;
-}
-
-/* Reset headlight source blend mode in garage */
-.garage-car-display-area .player-car .headlight-source {
-  mix-blend-mode: normal; /* Disable color-dodge */
-  /* Optional: Adjust opacity or blur if needed */
-  /* opacity: 0.9; */
-  /* filter: blur(7px); */
+  aspect-ratio: 2 / 1; 
 }
 
 /* Old mobile styles removed */
@@ -201,11 +220,33 @@
     font-size: clamp(0.8rem, 2.5vmin, 1.3rem); /* Smaller font */
   }
 
+  /* Adjust content panel padding and positioning on mobile */
+  .garage-content-panel {
+      padding: 10px;
+      /* min-height: 45vh; Removed */
+      top: 18vh; /* Adjust top position for mobile */
+      bottom: 2%; /* Adjust bottom position for mobile */
+      left: 20vw; 
+      right: 2vw; 
+  }
+  /* Adjust car wrapper width if needed (match panel adjustment logic) */
+  .garage-car-wrapper {
+    width: clamp(60vw, 85vw, 1000px); /* Match panel clamp base, maybe smaller max */
+  }
+
   /* Further reduce car size slightly if absolutely needed on very small landscape heights */
-  /* Example for very narrow landscape heights, adjust if needed */
   @media (max-height: 450px) {
-    .garage-car-display-area {
+    .garage-car-wrapper, 
+    .garage-content-panel {
       width: clamp(55vw, 70vw, 900px);
+      /* min-height: 40vh; Removed */
+      top: 20vh; /* Further adjust top */
+      bottom: 2%; /* Further adjust bottom */
+      left: 22vw; 
+      right: 1vw;
+    }
+     .garage-content-panel {
+      width: auto; /* Ensure width remains auto */
     }
     .garage-button.start-race-button {
       font-size: clamp(0.8rem, 3vmin, 1.4rem);
