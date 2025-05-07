@@ -1,8 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
+import { createAvatar } from '@dicebear/core';
+import * as style from '@dicebear/avataaars';
 import './Garage.css'; // We'll create this CSS file next
 import PlayerCar from './PlayerCar'; // Import PlayerCar
+import { type AvatarConfig } from '../App'; // Import the AvatarConfig type
 
 interface GarageProps {
+  playerAvatarOptions: AvatarConfig; // Use the specific type
+  playerName: string; // Added prop for player name
   onStartRace: () => void;
   onBackToMenu: () => void;
   showRotationOverlay: boolean;
@@ -12,6 +17,8 @@ interface GarageProps {
 type GarageView = 'Garage' | 'Profile' | 'Store' | 'Upgrades' | 'Tune';
 
 const Garage: React.FC<GarageProps> = ({ 
+  playerAvatarOptions, 
+  playerName, 
   onStartRace, 
   onBackToMenu,
   showRotationOverlay
@@ -34,7 +41,7 @@ const Garage: React.FC<GarageProps> = ({
       case 'Garage':
         return "Select your car";
       case 'Profile':
-        return "Player Profile"; // Placeholder
+        return `Viewing profile for ${playerName}`; // Use player name
       case 'Store':
         return "Item Store"; // Placeholder
       case 'Upgrades':
@@ -45,6 +52,21 @@ const Garage: React.FC<GarageProps> = ({
         return "Select your car";
     }
   };
+
+  // Generate Avatar SVG for Profile View using saved options
+  const profileAvatarSvg = useMemo(() => {
+    if (activeView !== 'Profile' || !playerAvatarOptions) return ''; 
+    console.log("Generating profile avatar with options:", playerAvatarOptions);
+    // Use type assertion for now, acknowledging potential rendering issues
+    // if the AvatarCreator bugs persist. Conditional logic similar to
+    // AvatarCreator might be needed here too for perfect rendering.
+    try {
+      return createAvatar(style, playerAvatarOptions as any).toString(); 
+    } catch (error) {
+      console.error("Error generating profile avatar SVG:", error);
+      return ''; // Return empty string on error
+    }
+  }, [activeView, playerAvatarOptions]);
 
   return (
     <div className="garage-container">
@@ -107,10 +129,30 @@ const Garage: React.FC<GarageProps> = ({
 
       {activeView !== 'Garage' && (
         <div className="garage-content-panel"> 
-          {/* Placeholder for content of Profile, Store, etc. */} 
-          <p style={{color: 'white', fontSize: '2rem'}}> 
-            {activeView} Content Goes Here 
-          </p>
+          {/* Render content based on view */}
+          {activeView === 'Profile' && (
+            <div className="profile-content"> {/* Added wrapper for layout */}
+              <h2>{playerName}</h2> {/* Display player name */}
+              {profileAvatarSvg ? (
+                  <div 
+                    className="profile-avatar-display" 
+                    dangerouslySetInnerHTML={{ __html: profileAvatarSvg }} 
+                  />
+              ) : (
+                  <p>Could not load avatar.</p> // Fallback message
+              )}
+              {/* Add other profile info here (stats, etc.) */}
+            </div>
+          )}
+          {activeView === 'Store' && (
+            <p>Store Content Goes Here</p>
+          )}
+          {activeView === 'Upgrades' && (
+            <p>Upgrades Content Goes Here</p>
+          )}
+           {activeView === 'Tune' && (
+            <p>Tune Content Goes Here</p>
+          )}
         </div>
       )}
 

@@ -12,7 +12,7 @@ import './Game.css';
 
 // Assuming sounds are in public/assets/
 const IDLE_SOUND_SRC = '/assets/idlesound.mp3';
-const RACE_SOUND_SRC = '/assets/racesound - 1746226597946.mp3';
+const RACE_SOUND_SRC = '/assets/racesound.mp3';
 
 interface GameProps {
   onBackToMenu: () => void; // Function to go back to the menu
@@ -125,10 +125,13 @@ const Game: React.FC<GameProps> = ({
     // Preload audio files
     idleAudioRef1.current = new Audio(IDLE_SOUND_SRC);
     idleAudioRef1.current.loop = true; // Loop this instance
+    idleAudioRef1.current.volume = 1.0; // Set volume to max
     idleAudioRef2.current = new Audio(IDLE_SOUND_SRC); // Second instance
     idleAudioRef2.current.loop = true; // Loop this instance too
+    idleAudioRef2.current.volume = 1.0; // Set volume to max
     raceAudioRef.current = new Audio(RACE_SOUND_SRC);
     raceAudioRef.current.loop = false;
+    raceAudioRef.current.volume = 1.0; // Set volume to max
 
     // Cleanup audio elements on component unmount
     return () => {

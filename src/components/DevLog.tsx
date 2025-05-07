@@ -17,6 +17,47 @@ interface LogEntry {
 const logEntries: LogEntry[] = [
   // --- NEW Entry ---
   {
+    date: '2024-05-19', // Assuming a new date, adjust if needed
+    version: 'v0.5.2',
+    title: 'Avatar Customization & Audio Polish',
+    content: (
+      <>
+        <p>This update introduces the initial version of player avatar customization and includes several important audio fixes and adjustments for a more immersive experience.</p>
+        <ul>
+          <li><strong>Player Avatar Customization:</strong>
+            <ul>
+              <li>Players can now create and personalize their driver avatar before heading to the garage.</li>
+              <li>Implemented the <code>AvatarCreator</code> component allowing selection of various features (hair, accessories, clothes, etc.).</li>
+              <li>Avatar configurations are saved and displayed in the player's profile within the Garage.</li>
+              <li><em>Note: The <code>AvatarCreator</code> component is still under active development and may have some linter errors or minor visual inconsistencies being addressed.</em></li>
+            </ul>
+          </li>
+          <li><strong>Audio Enhancements & Fixes:</strong>
+            <ul>
+              <li>Corrected an issue where the race sound effect (<code>racesound.mp3</code>) was not loading due to an incorrect filename.</li>
+              <li>Adjusted the playback logic for <code>racesound.mp3</code> to ensure it plays once when the car reaches high speed, as intended.</li>
+              <li>Ensured idle engine sounds (<code>idlesound.mp3</code>) play correctly when the engine is started and at low speeds.</li>
+              <li>Significantly rebalanced audio levels:
+                <ul>
+                  <li>Game sound effects (engine idle, race sound) now play at maximum volume (1.0).</li>
+                  <li>Background music volume has been reduced to 0.1 (10%) across all screens (menus, garage, and during gameplay) to make sound effects much more prominent.</li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+          <li><strong>Garage UI Fixes:</strong>
+             <ul>
+                <li>Addressed a CSS issue causing the player's car in the Garage to be misplaced on smaller screens (e.g., Android S10, iPhone XR dimensions) by resetting an conflicting transform.</li>
+                <li>Fixed an issue where the "Back to Menu" button in the Garage was not responsive due to being overlapped by the header; its <code>z-index</code> was increased.</li>
+             </ul>
+          </li>
+        </ul>
+        <p>These changes aim to enhance player personalization and improve the overall auditory feedback and UI consistency of the game.</p>
+      </>
+    ),
+  },
+  // --- NEW Entry ---
+  {
     date: '2024-05-18', // Assuming today's date, adjust if needed
     version: 'v0.5.1',
     title: 'Garage Layout & Responsive Refinements',

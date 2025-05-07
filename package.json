@@ -20,5 +20,9 @@
     "react-dom": "^19.1.0",
     "typescript": "^5.8.3",
     "vite": "^6.3.4"
+  },
+  "dependencies": {
+    "@dicebear/avataaars": "^9.2.2",
+    "@dicebear/core": "^9.2.2"
   }
 }

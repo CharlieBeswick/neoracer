@@ -86,7 +86,7 @@
   /* Reverted to original padding and font-size for a snugger fit around its text */
   padding: clamp(8px, 1.5vh, 12px) clamp(15px, 2.5vw, 25px); 
   font-size: clamp(0.9rem, 2.2vmin, 1.3rem); 
-  z-index: 20;
+  z-index: 21; /* Increased from 20 to 21 */
 }
 
 /* Specific positioning for Start Race button (bottom-center) */
@@ -236,14 +236,17 @@
 
   /* Further reduce car size slightly if absolutely needed on very small landscape heights */
   @media (max-height: 450px) {
-    .garage-car-wrapper, 
+    .garage-car-wrapper,
     .garage-content-panel {
       width: clamp(55vw, 70vw, 900px);
       /* min-height: 40vh; Removed */
       top: 20vh; /* Further adjust top */
       bottom: 2%; /* Further adjust bottom */
-      left: 22vw; 
+      left: 22vw;
       right: 1vw;
+    }
+    .garage-car-wrapper {
+      transform: none; /* Override the general centering transform */
     }
      .garage-content-panel {
       width: auto; /* Ensure width remains auto */
