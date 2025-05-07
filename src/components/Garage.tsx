@@ -41,6 +41,9 @@ const Garage: React.FC<GarageProps> = ({
 
       {/* Left Column Buttons */}
       <div className="left-button-column">
+        <button className="garage-button left-column-button" disabled>
+          Garage
+        </button>
         <button onClick={() => console.log('Not yet implemented')} className="garage-button left-column-button">
           Profile
         </button>
@@ -48,7 +51,7 @@ const Garage: React.FC<GarageProps> = ({
           Store
         </button>
         <button onClick={() => console.log('Not yet implemented')} className="garage-button left-column-button">
-          Select Car
+          Upgrades
         </button>
         <button onClick={() => console.log('Not yet implemented')} className="garage-button left-column-button">
           Tune
@@ -70,7 +73,7 @@ const Garage: React.FC<GarageProps> = ({
 
       {/* Start Race Button - Positioned lower-center or similar */}
       <button onClick={handleStartClick} className="garage-button start-race-button">
-        Start Race
+        Start<br />Race
       </button>
     </div>
   );

@@ -87,9 +87,22 @@
   position: absolute;
   bottom: 4vh; /* vh */
   right: 4vw; /* vw */
-  padding: clamp(15px, 2.5vh, 25px) clamp(30px, 5vw, 55px); 
-  font-size: clamp(1.2rem, 4.5vmin, 2.2rem); 
+  padding: clamp(20px, 3vh, 30px) clamp(15px, 2.5vw, 30px); /* Taller, less wide */
+  font-size: clamp(1rem, 4vmin, 2rem); /* Slightly adjusted font for new layout */
+  line-height: 1.1; /* Adjust for stacked text */
+  text-align: center; /* Center stacked text */
   z-index: 20;
+  /* Neon Green Colors */
+  border-color: #39FF14;
+  box-shadow: 0 0 8px #39FF14, inset 0 0 8px #39FF14;
+  text-shadow: 0 0 3px lime, 0 0 6px lime, 0 0 10px #39FF14;
+}
+
+.garage-button.start-race-button:hover {
+  /* Neon Green Hover Colors */
+  background-color: rgba(57, 255, 20, 0.1); /* Light green background */
+  box-shadow: 0 0 15px lime, inset 0 0 12px lime;
+  text-shadow: 0 0 5px lime, 0 0 10px lime, 0 0 15px #39FF14, 0 0 20px #39FF14;
 }
 
 /* Left Button Column Container */
@@ -110,13 +123,24 @@
   font-size: clamp(0.9rem, 2.8vmin, 1.5rem); 
 }
 
+/* Style for the active/disabled "Garage" button in the left column */
+.left-button-column .garage-button:disabled {
+  background-color: rgba(0, 170, 255, 0.1); /* Match hover background */
+  color: #ffffff; /* Match hover text color */
+  box-shadow: 0 0 15px #0ff, inset 0 0 12px #0ff; /* Match hover box-shadow */
+  text-shadow: 0 0 5px #0ff, 0 0 10px #0ff, 0 0 15px #00aaff, 0 0 20px #00aaff; /* Match hover text-shadow */
+  border-color: #00aaff; /* Ensure border color is consistent */
+  opacity: 1; /* Override any default browser dimming for disabled state */
+  cursor: default; /* Indicate it's not clickable */
+}
+
 /* Area to display the car in the center */
 .garage-car-display-area {
   position: absolute;
   top: 55%; /* Adjusted vertical position */
   left: 50%;
   transform: translate(-50%, -50%);
-  width: clamp(300px, 60vmin, 600px); /* Use clamp for responsive width */
+  width: clamp(1080px, 192vmin, 2160px); /* Increased by 20% from clamp(900px, 160vmin, 1800px) */
   /* height will be determined by car aspect ratio */
   z-index: 10;
 }
@@ -133,6 +157,7 @@
   /* Make car fill the container proportionally */
   width: 100%; 
   height: auto; 
+  aspect-ratio: 2 / 1; /* Explicitly set aspect ratio from original 450px/225px */
 }
 
 /* Ensure the centered class doesn't apply */

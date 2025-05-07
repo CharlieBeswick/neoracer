@@ -17,6 +17,42 @@ interface LogEntry {
 const logEntries: LogEntry[] = [
   // --- NEW Entry ---
   {
+    date: '2024-05-18', // Assuming today's date, adjust if needed
+    version: 'v0.5.0',
+    title: 'Garage Screen Overhaul & Visual Enhancements',
+    content: (
+      <>
+        <p>This update brings a significant visual and functional overhaul to the Garage screen based on iterative feedback and design refinements.</p>
+        <ul>
+          <li><strong>Player Car Display:</strong>
+            <ul>
+              <li>Addressed issues with the car body visibility, ensuring it renders correctly.</li>
+              <li>Substantially increased the displayed size of the player car for better visual impact.</li>
+              <li>Fine-tuned wheel scaling to be proportional to the car body and meticulously adjusted their positioning (up/down, left/right) for a precise fit.</li>
+              <li>Iteratively repositioned and rescaled headlight and taillight sources to align accurately with the car model, improving visual fidelity.</li>
+            </ul>
+          </li>
+          <li><strong>"Start Race" Button Redesign:</strong>
+            <ul>
+              <li>Changed button text to stack vertically ("Start" above "Race").</li>
+              <li>Updated the button's color scheme to a vibrant neon green, including border, shadows, and text glow.</li>
+              <li>Adjusted padding and font size to make the button taller and less wide, accommodating the new text layout.</li>
+            </ul>
+          </li>
+          <li><strong>Left Navigation Menu Enhancements:</strong>
+            <ul>
+              <li>Added a new "Garage" button at the top of the list, which is styled to appear active (continuous glow) as it represents the current screen. This button is disabled.</li>
+              <li>Ensured other buttons in this menu ("Profile", "Store", "Upgrades", "Tune") feature a neon blue glow effect on hover.</li>
+              <li>Renamed the "Select Car" button to "Upgrades".</li>
+            </ul>
+          </li>
+        </ul>
+        <p>These changes aim to create a more polished and user-friendly experience within the Garage.</p>
+      </>
+    ),
+  },
+  // --- NEW Entry ---
+  {
     date: '2024-05-17', // Use current date or adjust as needed
     version: 'v0.4.1',
     title: 'Post-Pedal Debugging & Known Issues',

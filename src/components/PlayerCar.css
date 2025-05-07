@@ -30,9 +30,9 @@
 .rear-wheel,
 .front-wheel {
   position: absolute;
-  /* Adjusted size slightly smaller */
-  width: 32px;  /* Was 35px */
-  height: 32px; /* Was 35px */
+  /* Adjusted size slightly smaller - now percentage based */
+  width: 7.875%;  /* Was 7.5%; increased by 5% */
+  height: 15.75%; /* Was 15.0%; increased by 5% */
   background-image: url('/assets/tyre1.png');
   background-size: contain;
   background-repeat: no-repeat;
@@ -46,13 +46,13 @@
 
 /* Adjusted positions based on screenshot */
 .rear-wheel {
-  bottom: 16%; /* Was 18% - Lowered slightly */
-  left: 27%;  /* Was 28% */
+  bottom: 14.5%; /* Was 15%; moved down 0.5% */
+  left: 26.5%;  /* Was 26%; adjusted */
 }
 
 .front-wheel {
-  bottom: 16%; /* Was 18% - Lowered slightly */
-  right: 31%; /* Was 35% */
+  bottom: 14.5%; /* Was 15%; moved down 0.5% */
+  right: 30.5%; /* Was 31%; adjusted */
 }
 
 /* Spin Animation */
@@ -75,21 +75,18 @@
 /* Player Rear Light Source */
 .player-car .rear-light-source {
   position: absolute;
-  /* Positioned relative to player-car - REAR */
-  bottom: 21%; /* Was 19% - Moved up 2% */
+  bottom: 28%; /* Was 29%; moved down 1% (50% of last upward movement) */
   right: auto;  
-  left: 16%;  /* Was 20% (originally 18%) - Corrected to move left */
+  left: 18%; /* Was 16%; moved closer to car (rightwards) */
   transform: translateY(-50%); 
   
-  /* Size/Appearance - Red */
-  width: 30px; 
-  height: 30px; 
+  width: 60px; /* Was 30px; doubled size */
+  height: 60px; /* Was 30px; doubled size */
   border-radius: 50%; 
-  background-color: rgba(255, 40, 40, 1); /* Fully opaque, slightly adjusted red */
-  filter: blur(12px); /* Was 10px - Increased blur further */
+  background-color: rgba(255, 40, 40, 1); 
+  filter: blur(12px); 
   mix-blend-mode: color-dodge; 
 
-  /* Layering - Above car body (100), same as wheels */
   z-index: 101; 
 }
 
@@ -100,6 +97,16 @@
 
 .player-car .rear-light-source.engine-off::after {
   opacity: 0; /* Hide trail too */
+}
+
+/* Player Front Headlight Source - Overriding HeadlightGlow.css for positioning and size */
+.player-car .headlight-source {
+  bottom: 23%; /* Was 24%; moved down 1% (50% of last upward movement) */
+  right: 21%; /* Was 20%; moved slightly left */
+  width: 76px; /* Doubled from base 38px */
+  height: 76px; /* Doubled from base 38px */
+  /* transform: translateY(-50%); (from HeadlightGlow.css) will apply */
+  /* Other properties like background-color, filter, border-radius will be inherited from HeadlightGlow.css */
 }
 
 /* Hide front light source when engine off */

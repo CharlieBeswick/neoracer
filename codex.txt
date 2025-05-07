@@ -1,0 +1,379 @@
+Project Codex: Neoracer (Based on src/App.tsx Analysis)
+
+Last Updated: [Current Date - Note: This is a static marker, update manually if needed]
+
+This document provides an overview of the Neoracer game's structure, core logic,
+and components as primarily defined within `src/App.tsx`.
+
+I. Main Application Component (`src/App.tsx`)
+    A. Core Responsibilities:
+        - Manages overall game state (e.g., menu, playing, garage).
+        - Handles global features like menu music, fullscreen mode, mute functionality, and screen orientation.
+        - Renders the appropriate UI component based on the current game state.
+        - Defines navigation logic between different parts of the game.
+
+    B. Game States (`GameState` type):
+        - `menu`: Displays the main menu.
+        - `modeSelection`: Allows the player to select a game mode.
+        - `garage`: Allows player to (presumably) view/select/customize cars before racing.
+        - `playing`: The active gameplay screen.
+        - `devlog`: Displays a developer log.
+        - `gameover`: (Currently commented out in `App.tsx`) Intended for a game over screen.
+
+    C. Key Logic Areas within `src/App.tsx`:
+        1. State Management:
+            - Uses `useState` hook for `gameState`, `isFullscreen`, `isMuted`, `isLandscape`, `showRotationOverlay`.
+            - `setGameState(newState)`: Primary function to transition between game states.
+
+        2. Audio Management:
+            - `menuAudioRef`: A `useRef` pointing to an `<HTMLAudioElement>` for menu music.
+            - `MENU_MUSIC_SRC` (constant): Path to the menu music file (`/assets/IVOXYGEN_-_plateau_angst_Techno_Remix_Extended (1).mp3`).
+            - Logic in `useEffect` hooks:
+                - Initializes and cleans up the audio element on component mount/unmount.
+                - Controls playback (play/pause) based on `gameState`. Music plays on `menu`, `modeSelection`, `garage`, and `devlog` states.
+            - Mute functionality is tied into this system via `isMuted` state.
+
+        3. Fullscreen Control:
+            - `isFullscreen` (state): Tracks if the game is in fullscreen mode.
+            - `toggleFullscreen()`: Function to request or exit fullscreen mode.
+            - `checkFullscreenStatus()`: Callback to update `isFullscreen` state.
+            - Uses `useEffect` to listen for `fullscreenchange` events.
+
+        4. Mute Control:
+            - `isMuted` (state): Tracks if the game audio (specifically menu music via `App.tsx`) is muted.
+            - `toggleMute()`: Function to toggle the `isMuted` state and apply it to `menuAudioRef.current.muted`.
+            - `useEffect` hook ensures the `menuAudioRef.current.muted` property reflects the `isMuted` state.
+
+        5. Screen Orientation:
+            - `isLandscape` (state): Tracks if the device orientation is landscape.
+            - `showRotationOverlay` (state): Boolean to control visibility of a "please rotate" overlay.
+            - `checkOrientation()`: Callback that:
+                - Updates `isLandscape` based on `screen.orientation.type` or window dimensions.
+                - Sets `showRotationOverlay` if not landscape AND game state is `modeSelection`, `garage`, or `playing`.
+            - `useEffect` hook:
+                - Checks orientation on mount.
+                - Attempts to lock screen to landscape (`screen.orientation.lock('landscape')`).
+                - Adds event listeners for `resize` and `screen.orientation.change`.
+
+        6. Navigation Functions (defined in `App.tsx`):
+            - `startGame()`: Transitions from `menu` to `modeSelection`.
+            - `goToGarage()`: Called from `ModeSelection` (`onStartSinglePlayer`), transitions to `garage`.
+            - `startRace()`: Called from `Garage` (`onStartRace`), transitions to `playing`.
+            - `quitGame()`: Transitions to `menu` (acts as a return to menu).
+            - `goToDevLog()`: Transitions to `devlog`.
+            - `goToMenu()`: Transitions to `menu` (reusable function for returning to main menu).
+
+        7. Rendering Logic:
+            - `renderGameState()`: A function containing a `switch` statement.
+            - Based on the current `gameState`, it returns the corresponding React component (`Menu`, `ModeSelection`, `Garage`, `Game`, `DevLog`).
+            - Passes necessary props (state values and callback functions) to these child components.
+
+    D. Props Passed to Child Components from `App.tsx`:
+        - Common: `onBackToMenu` (to `ModeSelection`, `Garage`, `Game`, `DevLog`).
+        - `Menu`: `onPlay`, `onQuit`, `isFullscreen`, `toggleFullscreen`, `onGoToDevLog`, `isMuted`, `toggleMute`.
+        - `ModeSelection`: `onStartSinglePlayer` (triggers `goToGarage`), `showRotationOverlay`.
+        - `Garage`: `onStartRace`, `showRotationOverlay`.
+        - `Game`: `isFullscreen`, `toggleFullscreen`, `isMuted`, `toggleMute`, `showRotationOverlay`.
+        - `DevLog`: No specific props other than `onBackToMenu`.
+
+II. UI Components (located in `src/components/` directory, inferred from `App.tsx`)
+    A. `Menu` (`src/components/Menu.tsx` - path inferred)
+        1. Purpose: Displays the main menu interface.
+        2. Receives Props (from `App.tsx`):
+            - `onPlay`: Function to initiate game start sequence (leads to mode selection).
+            - `onQuit`: Function to "quit" (returns to menu).
+            - `isFullscreen`: Boolean indicating fullscreen status.
+            - `toggleFullscreen`: Function to toggle fullscreen.
+            - `onGoToDevLog`: Function to navigate to the DevLog screen.
+            - `isMuted`: Boolean indicating mute status.
+            - `toggleMute`: Function to toggle mute.
+
+    B. `ModeSelection` (`src/components/ModeSelection.tsx` - path inferred)
+        1. Purpose: Displays options for selecting game modes.
+        2. Receives Props (from `App.tsx`):
+            - `onStartSinglePlayer`: Function to proceed, likely to the garage/setup for a single-player game.
+            - `onBackToMenu`: Function to return to the main menu.
+            - `showRotationOverlay`: Boolean to indicate if rotation overlay should be shown.
+
+    C. `Garage` (`src/components/Garage.tsx` - path inferred)
+        1. Purpose: Screen for pre-race activities, possibly car selection or customization.
+        2. Receives Props (from `App.tsx`):
+            - `onStartRace`: Function to begin the actual gameplay/race.
+            - `onBackToMenu`: Function to return to the main menu.
+            - `showRotationOverlay`: Boolean to indicate if rotation overlay should be shown.
+
+    D. `Game` (`src/components/Game.tsx` - path inferred)
+        1. Purpose: The main gameplay screen where the racing occurs.
+        2. Receives Props (from `App.tsx`):
+            - `onBackToMenu`: Function to return to the main menu (e.g., after game over or pausing).
+            - `isFullscreen`: Boolean indicating fullscreen status.
+            - `toggleFullscreen`: Function to toggle fullscreen.
+            - `isMuted`: Boolean indicating mute status for global sounds managed by App.
+            - `toggleMute`: Function to toggle mute.
+            - `showRotationOverlay`: Boolean to indicate if rotation overlay should be shown.
+
+    E. `DevLog` (`src/components/DevLog.tsx` - path inferred)
+        1. Purpose: Displays development logs or messages.
+        2. Receives Props (from `App.tsx`):
+            - `onBackToMenu`: Function to return to the main menu.
+
+III. Assets
+    A. Audio:
+        - Menu Music: `/assets/IVOXYGEN_-_plateau_angst_Techno_Remix_Extended (1).mp3`
+
+IV. Key Files Mentioned/Imported in `src/App.tsx`
+    - `react`: Core React library.
+    - `./components/Menu`: Menu component.
+    - `./components/Game`: Game component.
+    - `./components/ModeSelection`: ModeSelection component.
+    - `./components/Garage`: Garage component.
+    - `./components/DevLog`: DevLog component.
+
+V. Programming Patterns & Observations
+    - Component-Based Architecture: Standard React pattern.
+    - State Lifting: Global states (like `gameState`, `isFullscreen`, `isMuted`) are managed in the top-level `App` component and passed down as props.
+    - Callbacks for Actions: Child components trigger state changes in `App` via callback functions passed as props (e.g., `onPlay`, `onStartRace`).
+    - Hooks: Extensive use of `useState`, `useEffect`, `useRef`, `useCallback`.
+    - Conditional Rendering: The `renderGameState` function uses a `switch` statement to render different components based on `gameState`.
+    - Event Handling: For fullscreen changes, orientation changes, and window resize.
+    - Audio Control: Direct manipulation of `HTMLAudioElement` properties for playback and muting.
+
+
+VII. Detailed Component Breakdown (Expanding on Section II & VI)
+
+    A. `src/components/Menu.tsx`
+        1. Purpose: Displays the main menu, game title, play/dev log/quit options, and global controls.
+        2. Internal Logic:
+            - Purely presentational component, logic is handled by props passed from `App.tsx`.
+            - Displays "Fullscreen" / "Exit Fullscreen" based on `isFullscreen` prop.
+            - Displays "Mute" / "Unmute" based on `isMuted` prop.
+            - Contains credits text.
+        3. CSS: `src/components/Menu.css`
+
+    B. `src/components/ModeSelection.tsx`
+        1. Purpose: Allows player to choose between game modes (currently Singleplayer and a disabled Multiplayer).
+        2. Internal Logic:
+            - Displays a "Please rotate your device" overlay if `showRotationOverlay` prop is true.
+            - `handleMultiplayerClick`: Placeholder function, logs to console.
+            - Uses image assets for mode selection buttons (`/assets/singleplayer.png`, `/assets/multiplayer.png`).
+        3. Props Received (from `App.tsx`):
+            - `onStartSinglePlayer`: Navigates to Garage.
+            - `onBackToMenu`: Navigates to Menu.
+            - `showRotationOverlay`: Controls rotation message visibility.
+        4. CSS: `src/components/ModeSelection.css`
+
+    C. `src/components/Garage.tsx`
+        1. Purpose: Screen for pre-race preparations. Displays the player car and options to start the race or return to menu. Includes placeholder buttons for future features.
+        2. Internal Logic:
+            - Displays a "Please rotate your device" overlay if `showRotationOverlay` prop is true.
+            - Placeholder buttons for "Profile", "Store", "Select Car", "Tune" (log to console on click).
+            - Renders the `PlayerCar` component in a "paused" state (engine on, speed 0).
+        3. Props Received (from `App.tsx`):
+            - `onStartRace`: Navigates to Game (playing state).
+            - `onBackToMenu`: Navigates to Menu.
+            - `showRotationOverlay`: Controls rotation message visibility.
+        4. CSS: `src/components/Garage.css`
+
+    D. `src/components/DevLog.tsx`
+        1. Purpose: Displays a scrollable list of development log entries.
+        2. Internal Logic:
+            - Defines an `LogEntry` interface (`date`, `version`, `title`, `content`).
+            - `logEntries`: An array of `LogEntry` objects, with newer entries at the top.
+            - Content for entries can be JSX, allowing for rich text formatting and images (e.g., `devlog.png`).
+            - Maps over `logEntries` to render each one.
+        3. Props Received (from `App.tsx`):
+            - `onBackToMenu`: Navigates to Menu.
+        4. CSS: `src/components/DevLog.css`
+
+    E. `src/components/Game.tsx` (Core Gameplay Logic)
+        1. Purpose: Manages and renders the active racing gameplay. This is the most complex component.
+        2. Key State Variables:
+            - `currentSpeed`: Player's car speed.
+            - `isEngineOn`: Boolean for player's car engine state.
+            - `isAccelerating`, `isBraking`: Booleans for player input.
+            - `scrollPos`: Player's absolute scroll position on the track (determines background movement).
+            - `opponentCurrentSpeed`: Opponent's car speed.
+            - `targetRelativeDistance`, `opponentVisualOffsetX`: Used for opponent AI positioning (visual offset is lerped).
+            - `opponentScrollPos`: Opponent's absolute scroll position.
+            - `countdown`: For pre-race countdown (3, 2, 1, GO!).
+            - `raceStarted`: Boolean indicating if the race is active.
+            - `raceOutcome`: 'win', 'lose', or null.
+            - `isPaused`: True if `showRotationOverlay` is true (pauses game logic and audio).
+            - `isBurgerMenuOpen`: For in-game menu.
+        3. Core Logic Areas:
+            - Physics and Movement (in `gameLoop` called via `requestAnimationFrame`):
+                - Calculates `deltaTime` for frame-independent updates.
+                - Player Speed: Updates based on `isAccelerating`, `isBraking`, `isEngineOn`, `ACCELERATION_RATE`, `DECELERATION_RATE`, `BRAKING_RATE`, `ENGINE_OFF_DECELERATION_RATE`, `MAX_SPEED`.
+                - Opponent Speed & Position: Simple AI accelerates opponent towards `OPPONENT_TARGET_SPEED` up to `OPPONENT_MAX_SPEED`. `targetRelativeDistance` is calculated based on difference in scroll positions. `opponentVisualOffsetX` is smoothed using a lerp function towards `targetRelativeDistance`.
+                - Scroll Position: `scrollPos` and `opponentScrollPos` are updated based on their respective speeds.
+                - Race Logic:
+                    - Countdown timer before race starts.
+                    - `raceStarted` flag set to true after countdown.
+                    - Win/Loss condition: Checked when `scrollPos` or `opponentScrollPos` exceeds `RACE_DISTANCE_PIXELS`.
+                    - `raceOutcome` state is set.
+                    - (Attempted) Auto-return to Garage after 5s (noted as not fully functional in DevLog).
+            - Audio Management:
+                - Refs: `idleAudioRef1`, `idleAudioRef2`, `raceAudioRef`.
+                - Preloads `IDLE_SOUND_SRC`, `RACE_SOUND_SRC`.
+                - Complex `useEffect` hook manages playback:
+                    - Plays dual idle sounds (with a 2s delay for the second) when engine is on and speed is low (< 110).
+                    - Plays race sound (once) when engine is on and speed is high (>= 110).
+                    - Pauses sounds if `isPaused` or `isMuted` (from `App.tsx`) is true, or if engine is off.
+            - Input Handling:
+                - `handleAccelerationStart/End`, `handleBrakeStart/End`: Set `isAccelerating`/`isBraking` states.
+                - `toggleEngine()`: Toggles engine state. Resets race state and starts countdown if turning on.
+            - UI Elements & Controls:
+                - Renders player car, opponent car, background layers, finish line.
+                - Displays speed, race outcome message.
+                - "Start Engine" / "Stop Engine" button.
+                - Accelerator and Brake pedals (image-based).
+                - Burger menu for in-game options (Quit, Mute, Fullscreen).
+                - Shows "Please rotate device" overlay if `showRotationOverlay` is true.
+        4. Child Components Rendered:
+            - `Background`, `MountainLayer`, `BuildingLayer`, `SunLayer`, `Road`: Parallax background elements. Their movement is controlled by `scrollPos` and speed factors.
+            - `PlayerCar`: Visual representation of the player's vehicle.
+            - `OpponentCar`: Visual representation of the opponent's vehicle.
+            - `FinishLine`: Appears when player or opponent is near `RACE_DISTANCE_PIXELS`.
+        5. Constants:
+            - `BASE_SCROLL_SPEED`, `*_SPEED_FACTOR` for parallax layers.
+            - `TRACK_LENGTH_PIXELS`, `RACE_DISTANCE_PIXELS`.
+            - `ACCELERATION_RATE`, `DECELERATION_RATE`, etc. for car physics.
+            - `MAX_SPEED`, `OPPONENT_MAX_SPEED`.
+        6. CSS: `src/components/Game.css`
+
+    F. `src/components/PlayerCar.tsx`
+        1. Purpose: Renders the player's car, its wheels, lights, and particle effects.
+        2. Internal Logic:
+            - `isCentered`: State to apply a 'centered' class, potentially for initial animation (triggered by `currentSpeed > 0`).
+            - Wheel Animation: `wheelAnimationDuration` calculated based on `currentSpeed` to control spin speed. Pauses if speed is low.
+            - Taillight Trail Effect: `calculateTrailStyle` function dynamically adjusts CSS custom properties (`--trail-width`, `--trail-opacity`) based on `currentSpeed` for the `rear-light-source`.
+            - Engine Off Visuals: Applies an `engine-off` class to light elements if `isEngineOn` is false.
+        3. Child Components Rendered:
+            - `ParticleEmitter`: For speed-based particles.
+            - `IdleParticleEmitter`: For idle engine particles.
+            - `HeadlightGlow`: For headlight beam effect.
+        4. Props: `currentSpeed`, `isEngineOn`, `isPaused`.
+        5. CSS: `src/components/PlayerCar.css`
+
+    G. `src/components/OpponentCar.tsx`
+        1. Purpose: Renders the opponent's car, similar to PlayerCar.
+        2. Internal Logic:
+            - Similar wheel animation and taillight trail logic as `PlayerCar`, but based on `opponentSpeed`.
+            - `relativeX` prop controls horizontal positioning via `transform: translateX()`.
+            - Uses a distinct car body image (`/assets/orangecar1nowheels.png`).
+        3. Child Components Rendered:
+            - `ParticleEmitter`, `IdleParticleEmitter`, `HeadlightGlow`.
+        4. Props: `opponentSpeed`, `relativeX`, `isEngineOn`, `isPaused`.
+        5. CSS: `src/components/OpponentCar.css`
+
+    H. Parallax & Scenery Components
+        1. `src/components/Background.tsx`:
+            - Simple component, uses CSS `background-image` and `background-position` (controlled by `bgPositionX` prop from `Game.tsx`) for a repeating gradient background.
+            - CSS: `src/components/Background.css`
+        2. `src/components/MountainLayer.tsx`:
+            - Similar to `Background.tsx`, uses CSS for a repeating mountain image, parallax controlled by `bgPositionX` prop.
+            - CSS: `src/components/MountainLayer.css`
+        3. `src/components/BuildingLayer.tsx`:
+            - Similar to `Background.tsx`, uses CSS for repeating building images, parallax controlled by `bgPositionX` prop. Has an optional `isGlowLayer` prop.
+            - CSS: `src/components/BuildingLayer.css`
+        4. `src/components/SunLayer.tsx`:
+            - Renders a sun element. Parallax effect achieved using `transform: translateX()` controlled by `translateX` prop from `Game.tsx`.
+            - CSS: `src/components/SunLayer.css` (handles sun body and stripes).
+        5. `src/components/Road.tsx`:
+            - Similar to `Background.tsx`, uses CSS for the repeating road texture, parallax controlled by `bgPositionX` prop.
+            - CSS: `src/components/Road.css`
+        6. `src/components/SceneryLayer.tsx`:
+            - A more advanced layer component designed to render multiple, varied sprites along the track.
+            - Internal Logic:
+                - Manages its own `scrollPos` based on `scrollSpeed` prop using `requestAnimationFrame`.
+                - `renderSprites()`: Calculates positions for sprites up to `trackLengthPixels`.
+                - Uses `PREDEFINED_VARIATIONS` array to apply random scaling and flipping to sprites to avoid repetition.
+                - Sprites are positioned absolutely within a container that is translated.
+            - Props: `scrollSpeed`, `tileWidth` (spacing), `spriteSrc`, `spriteWidth`, `spriteHeight`, `verticalPosition`, `zIndex`, `trackLengthPixels`.
+            - Note: Not currently directly imported or used by `Game.tsx` in the provided `App.tsx` context, but its presence suggests plans for more detailed, non-repeating scenery elements.
+            - CSS: `src/components/SceneryLayer.css`
+
+    I. Effect & Utility Components
+        1. `src/components/ParticleEmitter.tsx` & `src/components/IdleParticleEmitter.tsx`:
+            - Likely responsible for generating and managing dust/smoke particle effects for cars. (Detailed internal logic not fully shown but inferred from names and props like `carSpeed`, `isEngineOn`, `isPaused`).
+            - CSS: `src/components/Particles.css` (likely shared)
+        2. `src/components/Particle.tsx`:
+            - Likely represents a single particle, animated by its parent emitter.
+        3. `src/components/HeadlightGlow.tsx`:
+            - Renders the headlight beam/glow effect for cars.
+            - CSS: `src/components/HeadlightGlow.css`
+        4. `src/components/FinishLine.tsx`:
+            - Displays the finish line image. Its visibility and positioning are likely controlled by `Game.tsx` based on race progress.
+            - CSS: `src/components/FinishLine.css`
+
+VIII. Build Process & Dependencies (`package.json`)
+    A. Project Information:
+        - Name: `neoracer`
+        - Version: `1.0.0`
+    B. Scripts:
+        - `dev`: `vite` (Starts the development server using Vite)
+        - `build`: `tsc && vite build` (First runs TypeScript compiler `tsc` for type checking, then uses Vite to build the project for production)
+        - `test`: Placeholder, echoes an error.
+    C. Dependencies (Key `devDependencies` as this is a frontend project managed by Vite):
+        - `@types/node`, `@types/react`, `@types/react-dom`: TypeScript type definitions.
+        - `@vitejs/plugin-react`: Vite plugin for React support (enables HMR, JSX transform etc.).
+        - `react`, `react-dom`: Core React libraries.
+        - `typescript`: TypeScript language.
+        - `vite`: Fast frontend build tool and development server.
+
+IX. Asset Details (Inferred & Explicit)
+    A. Audio (referenced in `App.tsx` and `Game.tsx`):
+        - Menu Music: `/assets/IVOXYGEN_-_plateau_angst_Techno_Remix_Extended (1).mp3`
+        - Engine Idle Sound: `/assets/idlesound.mp3`
+        - Race Sound: `/assets/racesound - 1746226597946.mp3` (Note: Filename implies a timestamped version, potential for changes)
+    B. Images (referenced in components):
+        - Mode Selection: `/assets/singleplayer.png`, `/assets/multiplayer.png`
+        - DevLog: `/assets/devlog.png` (used in an entry)
+        - Pedals (in `Game.tsx` via CSS or inline styles, actual paths might be in CSS): Likely `gaspedal.png`, etc. (mentioned in DevLog v0.4.0)
+        - Opponent Car Body: `/assets/orangecar1nowheels.png` (`OpponentCar.tsx`)
+        - Tyre Image: `/assets/tyre1.png` (used in `OpponentCar.tsx`, likely also `PlayerCar.tsx` via CSS)
+        - Other car part sprites, background textures, UI elements are defined in their respective CSS files or component TSX files if dynamically loaded.
+    C. Fonts:
+        - 'Texturina': Mentioned in DevLog v0.3.0 as globally applied via Google Fonts (in `index.html`).
+
+X. Game Mechanics Summary (Derived from `Game.tsx` and related components)
+    A. Core Loop:
+        1. Player starts at Menu (`App.tsx`).
+        2. Navigates: Menu -> ModeSelection -> Garage -> Game.
+        3. In `Game.tsx`:
+            - Player must toggle engine ON. This initiates a 3-second countdown.
+            - After countdown, `raceStarted` becomes true.
+            - Player controls acceleration and braking using on-screen pedals.
+            - Opponent car AI provides a challenge.
+            - Parallax backgrounds scroll based on player speed.
+            - Race ends when player or opponent crosses `RACE_DISTANCE_PIXELS`.
+            - `raceOutcome` ('win'/'loss') is displayed.
+            - (Intended) Automatic return to Garage screen after race outcome.
+    B. Player Car Physics:
+        - Speed changes based on acceleration, deceleration (coasting), braking, and engine-off states.
+        - `MAX_SPEED` cap.
+        - Visuals: Wheel spin speed, taillight trails, particle effects all react to speed and engine state.
+    C. Opponent AI:
+        - Basic acceleration towards a target speed (`OPPONENT_TARGET_SPEED`), capped by `OPPONENT_MAX_SPEED`.
+        - Position is maintained relative to the player using a smoothed (lerped) visual offset, creating a sense of competition rather than independent pathing on the full `TRACK_LENGTH_PIXELS`.
+    D. Audio:
+        - Menu music in non-gameplay states.
+        - In-game: Engine idle sounds at low speed, distinct race sound at high speed. Muteable.
+    E. UI & Controls:
+        - On-screen pedals for accelerate/brake.
+        - Engine start/stop button.
+        - Speed display.
+        - Burger menu for quit/mute/fullscreen during gameplay.
+    F. Track & Environment:
+        - Defined `TRACK_LENGTH_PIXELS` for the conceptual length of the environment.
+        - `RACE_DISTANCE_PIXELS` for the actual race objective.
+        - Parallax scrolling layers create depth and motion (gradient, sun, mountains, buildings, road).
+        - `SceneryLayer.tsx` suggests capability for more varied, non-repeating roadside objects.
+    G. Game States (within `Game.tsx`):
+        - Pre-countdown (engine off or just turned on).
+        - Countdown active.
+        - Race active.
+        - Race finished (win/loss displayed).
+        - Paused (e.g., due to rotation overlay).
+
+(End of Codex) 
